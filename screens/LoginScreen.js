@@ -36,13 +36,15 @@ const LoginScreen = () => {
 				placeholder='username'
                 autoFocus
                 value={username}
-				onChangeText={text => setUsername(text)}>
+				onChangeText={text => setUsername(text)}
+                leftIcon={{ type: 'font-awesome', name: 'user', size: 20, color: "gray" }}>
 			</Input>
             <Input
 				placeholder='password'
                 secureTextEntry={true} 
                 value={password}
-				onChangeText={password => setPassword(password)}>
+				onChangeText={password => setPassword(password)}
+                leftIcon={{ type: 'evilcons', name: 'lock', size: 20, color: "gray"  }}>
 			</Input>
             <Button title={"Log In"} onPress={loginEnter}></Button>
         </View>
