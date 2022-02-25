@@ -1,15 +1,21 @@
+import {useEffect, useContext} from "react";
 import { View, Text } from "react-native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "react-native-elements";
 import MyProfileScreen from "../screens/MyProfileScreen";
-import HomeScreen from "./HomeScreen";
 import LoginScreen from "./LoginScreen";
-import React from "react";
+import { TokenContext } from "../context/tokenContext";
+import NavigationService from "../services/NavigationService";
 
 const Stack = new createNativeStackNavigator();
 
+const AcademicPerformanceScreen = ({ navigation, route }) => {
 
-const AcademicPerformanceScreen = ({ navigation }) => {
+    const {isAuth, setIsAuth} = useContext(TokenContext);
+
+    useEffect(() => {
+        NavigationService.logOut(route, setIsAuth);
+      }, [route.params?.logOut]);
 
     return(
         <Stack.Navigator 

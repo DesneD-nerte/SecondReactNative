@@ -1,29 +1,27 @@
-import {useEffect, useContext} from "react";
-import { View, Text } from "react-native"
+import { useEffect, useState, useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button } from "react-native-elements";
-import MyProfileScreen from "../screens/MyProfileScreen";
-import LoginScreen from "./LoginScreen";
+import MyProfileScreen from "./MyProfileScreen";
+import Messenger from "../components/Messenger";
 import { TokenContext } from "../context/tokenContext";
 import NavigationService from "../services/NavigationService";
 
+
 const Stack = new createNativeStackNavigator();
-
-
-const NewsScreen = ({ navigation, route }) => {
-
+  
+const MessengerScreen = ({ navigation, route }) => {
+    
     const {isAuth, setIsAuth} = useContext(TokenContext);
 
     useEffect(() => {
         NavigationService.logOut(route, setIsAuth);
       }, [route.params?.logOut]);
-
+    
     return(
         <Stack.Navigator 
             screenOptions={{ headerShown: false }}
         >
-            <Stack.Screen name="Newsline"
-                component={LoginScreen}/>
+            <Stack.Screen name="Messenger"
+                component={Messenger}/>
             <Stack.Screen name="Settings"
                 component={MyProfileScreen}
                 />
@@ -31,6 +29,6 @@ const NewsScreen = ({ navigation, route }) => {
     )
 }
 
-export default NewsScreen;
+export default MessengerScreen;
 
 

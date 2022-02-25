@@ -6,7 +6,7 @@ const $api = axios.create();
 $api.interceptors.request.use(async config => {
     const token = await AsyncStorage.getItem('token')
     config.headers.Authorization = token;
-    
+
     return config;
 })
 

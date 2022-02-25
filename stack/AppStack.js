@@ -4,8 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NewsScreen from "../screens/NewsScreen";
 import HomeScreen from "../screens/HomeScreen";
-import MyProfileScreen from "../screens/MyProfileScreen";
-import MessangerScreen from "../screens/MessangerScreen";
+import MessengerScreen from "../screens/MessengerScreen";
 import AcademicPerformanceScreen from "../screens/AcademicPerformanceScreen";
 import { Button } from "react-native-elements";
 import ScreenHeaderRight from "../components/ScreenHeaderRight";
@@ -16,11 +15,12 @@ const Tab = new createBottomTabNavigator();
 const AppStack = () => {    
 
     return (
-        <Tab.Navigator
+        <Tab.Navigator initialRouteName= "Home"
             screenOptions={({navigation, route}) => ({
                 headerRight: () => (
                 <Button  
                     title={"Settings"}
+                    type="clear"
                     onPress={() => {
                         navigation.navigate(route.name, {screen: 'Settings'});
                     }}>
@@ -48,7 +48,7 @@ const AppStack = () => {
             </Tab.Screen>
             <Tab.Screen
                 name="Chat"
-                component={MessangerScreen}
+                component={MessengerScreen}
                 options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name="message-reply-text" color={color} size={size} />

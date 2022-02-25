@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native"
-import { Avatar } from "react-native-elements";
+import { useState, useEffect, useContext } from "react";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native"
+import { Avatar, Button } from "react-native-elements";
 import axios from "axios";
 import $api from '../http/index';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import NavigationService from "../services/NavigationService";
 
-const MyProfileScreen = ({navigation}) => {
+const MyProfileScreen = ({navigation, route}) => {
     const imageUrl = 'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg';
-    
+
     const [isLoading, setIsLoading] = useState(true);
     const [nameAndSurname, setNameAndSurname] = useState('');
     const [login, setLogin] = useState('');
     const [roles, setRoles] = useState([]);
 
 
-    useEffect(async() => {
+    useEffect(() => {
         //instanceAxios.get(`http://192.168.100.4:5000/myprofile`)
         //instanceAxios.get(`http://10.0.2.2:5000/myprofile`)
         $api.get(`http://192.168.100.4:5000/myprofile`)
@@ -27,16 +27,25 @@ const MyProfileScreen = ({navigation}) => {
         .catch((error) => console.log(error.message))
     }, [])
 
+    const logOut = (event) => {
+        const routeName = NavigationService.getParentRoute(navigation);
+
+        //console.log(routeName);
+        navigation.navigate({
+            name: routeName,
+            params: { logOut: true},
+        });
+    };
+
 
     return (
         <View style={styles.profileContainer}>
             
             {isLoading 
                 ? 
-                    <View className='loading'>
-                        <Text>
-                            ЗАГРУЗКА...
-                        </Text>
+                    <View style={styles.loading}>
+                        <Text style={styles.loadingText}>Загрузка</Text>
+                        <ActivityIndicator size="large" color="#33a8ff"/>
                     </View>
                 :
                     <View style={styles.mainContainer}>
@@ -53,6 +62,9 @@ const MyProfileScreen = ({navigation}) => {
                             <Text style={styles.propertiesName}>Status:</Text>
                             <Text style={styles.propertiesValue}>{roles}</Text>
                         </View>
+                        <View style={styles.logoutContainer}>
+                            <Button title={"Logout"} type='outline' buttonStyle={{borderWidth: 1}} onPress={logOut}></Button>
+                        </View>
                     </View>
             }
         </View>
@@ -62,15 +74,14 @@ export default MyProfileScreen;
 
 const styles = StyleSheet.create({
     profileContainer: {
-        backgroundColor: 'white',
         flexDirection: 'column',
         alignSelf: 'stretch',
+        justifyContent: 'center',
         margin: 5,
         flex: 1
     },
 
     mainContainer: {
-        backgroundColor: 'white',
         flexDirection: 'column',
         margin: 5,
         flex: 1
@@ -78,7 +89,6 @@ const styles = StyleSheet.create({
 
     avatarContainer: {
         alignItems: 'center',
-        justifyContent: 'center',
         flex: 1
     },
 
@@ -90,12 +100,27 @@ const styles = StyleSheet.create({
     propertiesName: {
         color: '#c1c1c1',
         fontSize: 18,
-        marginTop: 15
+        marginTop: 10
     },
 
     propertiesValue: {
         color: 'black',
         fontSize: 16
+    },
+
+    loading: {
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    loadingText: {
+        fontSize: 16
+    },
+
+    logoutContainer: {
+        alignItems: 'center',
     }
 })
 

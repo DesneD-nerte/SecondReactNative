@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TextInput, View, Image } from 'react-native';
 import { Input } from "react-native-elements/dist/input/Input";
@@ -16,12 +16,17 @@ const LoginScreen = () => {
     const loginEnter = async () => {
         await axios.post("http://192.168.100.4:5000/api/auth/login", {username: username, password: password})
         .then(async response => {
-            console.log(response.data.token);
             setIsAuth(true);
-            await AsyncStorage.setItem('token', token)
+            await AsyncStorage.setItem('token', response.data.token);
         })
         .catch(err => console.log(err.message));
     }
+
+    useEffect(async () => {
+        // await AsyncStorage.clear();
+        //const token = await AsyncStorage.getItem('token');
+        // console.log("EFFECT", isAuth);
+    }, [])
 
     return(
         
@@ -35,7 +40,6 @@ const LoginScreen = () => {
 			</Input>
             <Input
 				placeholder='password'
-                autoFocus
                 secureTextEntry={true} 
                 value={password}
 				onChangeText={password => setPassword(password)}>
