@@ -6,7 +6,7 @@ import $api from '../http/index';
 import NavigationService from "../services/NavigationService";
 
 const MyProfileScreen = ({navigation, route}) => {
-    const imageUrl = 'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg';
+    const imageUrl = 'https://randomuser.me/api/portraits/men/36.jpg';
 
     const [isLoading, setIsLoading] = useState(true);
     const [nameAndSurname, setNameAndSurname] = useState('');

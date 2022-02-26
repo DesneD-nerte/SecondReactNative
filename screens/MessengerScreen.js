@@ -4,6 +4,7 @@ import MyProfileScreen from "./MyProfileScreen";
 import Messenger from "../components/Messenger";
 import { TokenContext } from "../context/tokenContext";
 import NavigationService from "../services/NavigationService";
+import { UsersMessanger } from "../components/UsersMessanger";
 
 
 const Stack = new createNativeStackNavigator();
@@ -22,9 +23,10 @@ const MessengerScreen = ({ navigation, route }) => {
         >
             <Stack.Screen name="Messenger"
                 component={Messenger}/>
+            <Stack.Screen name="AddUser"
+                component={UsersMessanger}/>
             <Stack.Screen name="Settings"
-                component={MyProfileScreen}
-                />
+                component={MyProfileScreen}/>
         </Stack.Navigator>
     )
 }
