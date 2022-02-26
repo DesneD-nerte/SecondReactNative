@@ -6,7 +6,7 @@ import mainLogo from '../assets/favicon.png';
 import { Agenda } from 'react-native-calendars';
 import { Avatar, Divider, Input } from "react-native-elements";
 
-const Scheduler = () => {
+const ScheduleScreen = () => {
 
     const [items, setItems] = useState({
         '2022-01-24': [{title: 'Programming', time: '10:15'}, {title: 'Math', time: '12:00'}, {title: 'Modelling', time: '14:10'}],
@@ -163,7 +163,7 @@ const Scheduler = () => {
 
 };
 
-export default Scheduler;
+export default ScheduleScreen;
 
 const styles = StyleSheet.create({
     mainContainer: {

@@ -5,29 +5,14 @@ import { Button } from "react-native-elements";
 import MyProfileScreen from "../screens/MyProfileScreen";
 import LoginScreen from "./LoginScreen";
 import { TokenContext } from "../context/tokenContext";
-import NavigationService from "../services/NavigationService";
 
 const Stack = new createNativeStackNavigator();
 
 
 const NewsScreen = ({ navigation, route }) => {
 
-    const {isAuth, setIsAuth} = useContext(TokenContext);
-
-    useEffect(() => {
-        NavigationService.logOut(route, setIsAuth);
-      }, [route.params?.logOut]);
-
     return(
-        <Stack.Navigator 
-            screenOptions={{ headerShown: false }}
-        >
-            <Stack.Screen name="Newsline"
-                component={LoginScreen}/>
-            <Stack.Screen name="Settings"
-                component={MyProfileScreen}
-                />
-        </Stack.Navigator>
+        <LoginScreen/>
     )
 }
 

@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, ActivityIndicator } from "react-native"
 import { Avatar, Button } from "react-native-elements";
 import axios from "axios";
 import $api from '../http/index';
-import NavigationService from "../services/NavigationService";
+import { TokenContext } from "../context/tokenContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MyProfileScreen = ({navigation, route}) => {
     const imageUrl = 'https://randomuser.me/api/portraits/men/36.jpg';
@@ -12,6 +13,7 @@ const MyProfileScreen = ({navigation, route}) => {
     const [nameAndSurname, setNameAndSurname] = useState('');
     const [login, setLogin] = useState('');
     const [roles, setRoles] = useState([]);
+    const {isAuth, setIsAuth} = useContext(TokenContext);
 
 
     useEffect(() => {
@@ -28,13 +30,16 @@ const MyProfileScreen = ({navigation, route}) => {
     }, [])
 
     const logOut = (event) => {
-        const routeName = NavigationService.getParentRoute(navigation);
+        //const routeName = NavigationService.getParentRoute(navigation);
 
         //console.log(routeName);
-        navigation.navigate({
-            name: routeName,
-            params: { logOut: true},
-        });
+        //navigation.navigate({
+        //    name: routeName,
+        //    params: { logOut: true},
+        //});
+        
+        AsyncStorage.clear();
+        setIsAuth(false);
     };
 
 

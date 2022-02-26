@@ -1,36 +1,51 @@
-import { useEffect, useState, useContext } from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MyProfileScreen from "./MyProfileScreen";
-import Messenger from "../components/Messenger";
-import { TokenContext } from "../context/tokenContext";
-import NavigationService from "../services/NavigationService";
-import { UsersMessanger } from "../components/UsersMessanger";
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
+import { io } from 'socket.io-client';
+import { Icon } from 'react-native-elements';
+import Background from '../assets/WhiteBackground.jpg';
+import ChatListItem from '../components/ChatListItem';
+import ChatRooms from '../data/ChatRooms';
 
+const MessengerScreen = ({navigation}) => {
 
-const Stack = new createNativeStackNavigator();
-  
-const MessengerScreen = ({ navigation, route }) => {
-    
-    const {isAuth, setIsAuth} = useContext(TokenContext);
+	return (
+		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
+			<View style={{flex: 1}}>
+				<View style={styles.messagesContainer}>
+					<FlatList
+						data={ChatRooms}
+						renderItem={({ item }) => <ChatListItem chatRoom={item}/>}
+					/>
+					{/* <ChatListItem chatRoom={ChatRooms[0]}></ChatListItem> */}
+				</View>
 
-    useEffect(() => {
-        NavigationService.logOut(route, setIsAuth);
-      }, [route.params?.logOut]);
-    
-    return(
-        <Stack.Navigator 
-            screenOptions={{ headerShown: false }}
-        >
-            <Stack.Screen name="Messenger"
-                component={Messenger}/>
-            <Stack.Screen name="AddUser"
-                component={UsersMessanger}/>
-            <Stack.Screen name="Settings"
-                component={MyProfileScreen}/>
-        </Stack.Navigator>
-    )
+				<View style={styles.plusContainer}>
+				<Icon
+					reverse
+					name='pencil-sharp'
+					type='ionicon'
+					color='#2CA5FF'
+					// onPress={() => navigation.navigate('AddUser')}
+					onPress={() => navigation.navigate('UsersMessenger')}
+					/>
+				</View>
+
+			</View>
+		</ImageBackground>
+	)
 }
 
 export default MessengerScreen;
 
 
+const styles = StyleSheet.create({
+	messagesContainer: {
+		flex: 1
+	},
+
+	plusContainer: {
+		position: 'absolute',
+		right: 5,
+		bottom: 5
+	}
+})
