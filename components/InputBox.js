@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { io } from 'socket.io-client';
 import { Icon } from 'react-native-elements';
-import Background from '../assets/WhiteBackground.jpg';
 
 
 function InputBox() {
@@ -12,19 +11,19 @@ function InputBox() {
 	const [chatMessages, setChatMessages] = useState(['hello', '3453']);
 	const [socket, setSocket] = useState();
 
-	useEffect(() => {
-		setSocket(io('http://192.168.100.4:5000'));
-		console.log('socket connected');
+	// useEffect(() => {
+	// 	setSocket(io('http://192.168.100.4:5000'));
+	// 	console.log('socket connected');
 		
-		//socket.on('chat message', (msg) => console.log(msg));
+	// 	//socket.on('chat message', (msg) => console.log(msg));
 
-		return (() => {
-			console.log('Disconnecting socket...');
-  			if(socket) {
-				socket.disconnect();
-			}
-		})
-	}, [])
+	// 	return (() => {
+	// 		console.log('Disconnecting socket...');
+  	// 		if(socket) {
+	// 			socket.disconnect();
+	// 		}
+	// 	})
+	// }, [])
 
 	const enterMessage = () => {
 		if(message === null || message.match(/^ *$/) !== null) {

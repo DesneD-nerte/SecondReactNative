@@ -1,17 +1,18 @@
 export type User = {
-    id: String;
+    _id: String;
     name: String;
     imageUri: String;
 }
 
 export type Message = {
-    id: String;
+    _id: String;
     content: String;
     createdAt: Number;
+    user: User;
 }
 
 export type ChatRoom = {
-    id: String;
-    users: [User];
+    _id: String;
+    users: User[];
     lastMessage: Message;
 }

@@ -14,7 +14,7 @@ const MessengerScreen = ({navigation}) => {
 				<View style={styles.messagesContainer}>
 					<FlatList
 						data={ChatRooms}
-						renderItem={({ item }) => <ChatListItem chatRoom={item}/>}
+						renderItem={({ item }) => <ChatListItem chatRoom={ item }/>}
 					/>
 					{/* <ChatListItem chatRoom={ChatRooms[0]}></ChatListItem> */}
 				</View>
@@ -26,7 +26,7 @@ const MessengerScreen = ({navigation}) => {
 					type='ionicon'
 					color='#2CA5FF'
 					// onPress={() => navigation.navigate('AddUser')}
-					onPress={() => navigation.navigate('UsersMessenger')}
+					onPress={() => navigation.navigate('UsersMessengerScreen')}
 					/>
 				</View>
 

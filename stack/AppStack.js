@@ -9,7 +9,8 @@ import AcademicPerformanceScreen from "../screens/AcademicPerformanceScreen";
 import { Button } from "react-native-elements";
 import MainNavigation from "../Navigation/MainNavigation";
 import MyProfileScreen from "../screens/MyProfileScreen";
-import { UsersMessenger } from "../components/UsersMessenger";
+import { UsersMessengerScreen } from "../screens/UsersMessengerScreen";
+import ChatRoomScreen from "../screens/ChatRoomScreen";
 
 const Stack = new createNativeStackNavigator();
 const Tab = new createBottomTabNavigator();
@@ -32,8 +33,15 @@ const AppStack = () => {
             >
             </Stack.Screen>
             <Stack.Screen
-                name="UsersMessenger"
-                component={UsersMessenger} 
+                name="UsersMessengerScreen"
+                component={UsersMessengerScreen}
+                options={{title: 'Contacts'}} 
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="ChatRoomScreen"
+                component={ChatRoomScreen} 
+                options={({route}) => ({title: route.params.name})}
             >
             </Stack.Screen>
         </Stack.Navigator>

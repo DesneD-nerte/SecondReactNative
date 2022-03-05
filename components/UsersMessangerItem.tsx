@@ -1,5 +1,5 @@
 import React from'react'
-import { Text, View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
@@ -9,48 +9,36 @@ type ChatListItemProps = {
 	chatRoom: ChatRoom;
 }
 
-const ChatListItem = (props: ChatListItemProps) => {
-	const { chatRoom } = props;
-	
-	const me: User = chatRoom.users[0];
+function UsersMessangerItem(props: ChatListItemProps) {
+
+	const { chatRoom } = props; 
+
 	const user: User = chatRoom.users[1];
 
 	const navigation = useNavigation();
 
 	const onClick = () => {
 		navigation.navigate('ChatRoomScreen', {
-			myId: me._id,
-			myName: me.name,
-			
-			id: user._id,
+			id: user.id,
 			name: user.name
 		});
 	}
 
 	return (
-		<TouchableOpacity onPress={onClick}>
+		<TouchableWithoutFeedback onPress={onClick}>
 			<View style={styles.container}>
 				<View style={styles.leftContainer}>
 					<Avatar size={54} rounded source={{ uri: user.imageUri}}></Avatar>
 					<View style={styles.midContainer}>
 						<Text style={styles.username}>{user.name}</Text>
-						<Text numberOfLines={1} style={styles.textMessage}>{chatRoom.lastMessage.content}</Text>
-					</View>
-				</View>
-
-				<View style={styles.rightContainer}>
-					<Text>Yesterday</Text>
-					{/* <Text>{chatRoom.lastMessage.createdAt}</Text> */}
-					<View style={styles.countContainer}>
-						<Text style={{color: 'white'}}>{'1'}</Text>
 					</View>
 				</View>
 			</View>
-		</TouchableOpacity>
+		</TouchableWithoutFeedback>
 	)
 }
 
-export default ChatListItem;
+export default UsersMessangerItem
 
 
 const styles = StyleSheet.create({
