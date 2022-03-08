@@ -13,17 +13,18 @@ const MyProfileScreen = ({navigation, route}) => {
     const [nameAndSurname, setNameAndSurname] = useState('');
     const [login, setLogin] = useState('');
     const [roles, setRoles] = useState([]);
+    const [imageUri, setImageUri] = useState('');
     const {isAuth, setIsAuth} = useContext(TokenContext);
 
 
     useEffect(() => {
-        //instanceAxios.get(`http://192.168.100.4:5000/myprofile`)
-        //instanceAxios.get(`http://10.0.2.2:5000/myprofile`)
         $api.get(`http://192.168.100.4:5000/myprofile`)
         .then(response => {
                 setNameAndSurname(response.data.name);
                 setLogin(response.data.username);
                 setRoles(response.data.roles);
+                const fixedImageUri = response.data.imageUri.replace('localhost', '192.168.100.4');
+                setImageUri(fixedImageUri);
                 setIsLoading(false);
             })
         .catch((error) => console.log(error.message))
@@ -55,7 +56,7 @@ const MyProfileScreen = ({navigation, route}) => {
                 :
                     <View style={styles.mainContainer}>
                         <View style={styles.avatarContainer}>
-                            <Avatar size={150} rounded source={{uri: imageUrl}}></Avatar>
+                            <Avatar size={150} rounded source={{uri: imageUri}}></Avatar>
                         </View>
                         <View style={styles.infoContainer}>
                             <Text style={styles.propertiesName}>Name:</Text>

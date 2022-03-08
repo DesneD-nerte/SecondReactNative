@@ -2,20 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { io } from 'socket.io-client';
 import { Icon } from 'react-native-elements';
+import { useChat } from '../hooks/useChat';
 
-
-function InputBox() {
+function InputBox({sendMessage}) {
 
     //#region Socket.IO
-	const [message, setMessage] = useState("");
-	const [chatMessages, setChatMessages] = useState(['hello', '3453']);
-	const [socket, setSocket] = useState();
+	const [message, setMessage] = useState('');
+	const [] = useChat()
+	//const [socket, setSocket] = useState();
 
 	// useEffect(() => {
 	// 	setSocket(io('http://192.168.100.4:5000'));
 	// 	console.log('socket connected');
-		
-	// 	//socket.on('chat message', (msg) => console.log(msg));
 
 	// 	return (() => {
 	// 		console.log('Disconnecting socket...');
@@ -26,16 +24,18 @@ function InputBox() {
 	// }, [])
 
 	const enterMessage = () => {
-		if(message === null || message.match(/^ *$/) !== null) {
-			alert("Введите корректное сообщение");
-			return;
-		}
-
+		// if(message === null || message.match(/^ *$/) !== null) {
+		// 	alert("Введите корректное сообщение");
+		// 	return;
+		// }
+		
 		const fixedMessage = message.trim();
-		setChatMessages([...chatMessages, fixedMessage]);
-		socket.emit("chat message", fixedMessage);
-
-		setMessage('');
+		if(fixedMessage) {
+			sendMessage({message: message});
+			setMessage('');
+		}
+		// setChatMessages([...chatMessages, fixedMessage]);
+		// socket.emit("chat message", fixedMessage);
 	}
 	//#endregion
 

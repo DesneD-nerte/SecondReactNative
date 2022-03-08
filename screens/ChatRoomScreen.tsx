@@ -8,7 +8,7 @@ import Background from '../assets/WhiteBackground.jpg';
 import DateMessage from '../services/DateMessage'
 import $api from '../http'
 import Chats from '../data/Chats'
-
+import { useChat } from '../hooks/useChat'
 
 let currentDate = new Date('1970.01.01');
 let previousDate = new Date('1970-01-01');
@@ -21,18 +21,18 @@ function ChatRoomScreen({route}) {
 
 	const [message, setMessage] = useState("");
 	const [chatMessages, setChatMessages] = useState(Chats);
-
+	
 	useEffect(() => {
 		const {myId, myName, id, name} = route.params;
 
 		console.log(myId, ' : ', myName, ' : ', id, ' : ', name,);
 
-			$api.get(`http://192.168.100.4:5000/messages`, {params: { myId: myId, myName: myName, id: id, name: name}})
-			.then((response) => {
-				setChatMessages(response.data);
-				console.log(response.data);
-			})
-			.catch(() => console.log("Ошибка загрузки"));
+		$api.get(`http://192.168.100.4:5000/messages/getChatRoomMessages`, {params: { myId: myId, myName: myName, id: id, name: name}})
+		.then((response) => {
+			setChatMessages(response.data);
+			console.log(response.data);
+		})
+		.catch(() => console.log("Ошибка загрузки"));
 	}, [])
 
 	return (

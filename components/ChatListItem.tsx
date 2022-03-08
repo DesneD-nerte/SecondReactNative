@@ -4,16 +4,24 @@ import { Avatar, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 import { ChatRoom, Message, User } from '../types';
+import moment from 'moment';
+
+moment.locale('ru');
 
 type ChatListItemProps = {
-	chatRoom: ChatRoom;
+	id: String,
+	chatRoom: ChatRoom
 }
 
 const ChatListItem = (props: ChatListItemProps) => {
-	const { chatRoom } = props;
+	const { id, chatRoom } = props;
 	
-	const me: User = chatRoom.users[0];
-	const user: User = chatRoom.users[1];
+	const me: User = chatRoom.users.find(user => user._id === id);
+	const user: User = chatRoom.users.find(user => user._id !== id);
+	
+	const imageUri = user.imageUri.replace('localhost', '192.168.100.4');
+
+	const dateLastMessage = moment(chatRoom.lastMessage.createdAt).format('L'); 
 
 	const navigation = useNavigation();
 
@@ -23,7 +31,9 @@ const ChatListItem = (props: ChatListItemProps) => {
 			myName: me.name,
 			
 			id: user._id,
-			name: user.name
+			name: user.name,
+
+			roomId: chatRoom._id
 		});
 	}
 
@@ -31,15 +41,15 @@ const ChatListItem = (props: ChatListItemProps) => {
 		<TouchableOpacity onPress={onClick}>
 			<View style={styles.container}>
 				<View style={styles.leftContainer}>
-					<Avatar size={54} rounded source={{ uri: user.imageUri}}></Avatar>
+					<Avatar size={54} rounded source={imageUri ? { uri: imageUri } : {}}></Avatar>
 					<View style={styles.midContainer}>
-						<Text style={styles.username}>{user.name}</Text>
+						<Text numberOfLines={1} style={styles.username}>{user.name}</Text>
 						<Text numberOfLines={1} style={styles.textMessage}>{chatRoom.lastMessage.content}</Text>
 					</View>
 				</View>
 
 				<View style={styles.rightContainer}>
-					<Text>Yesterday</Text>
+					<Text>{dateLastMessage}</Text>
 					{/* <Text>{chatRoom.lastMessage.createdAt}</Text> */}
 					<View style={styles.countContainer}>
 						<Text style={{color: 'white'}}>{'1'}</Text>
@@ -89,7 +99,8 @@ const styles = StyleSheet.create({
 	rightContainer: {
 		flexDirection: 'column',
 		alignItems: 'flex-end',
-		justifyContent: 'space-between'
+		justifyContent: 'space-around',
+		paddingLeft: 15
 	}, 
 
 	countContainer: {
