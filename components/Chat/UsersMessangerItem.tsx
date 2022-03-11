@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
-import { ChatRoom, Message, User } from '../types';
+import { ChatRoom, Message, User } from '../../types';
 
 type ChatListItemProps = {
 	chatRoom: ChatRoom;

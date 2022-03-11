@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements'
-import { ChatRoom, Message } from '../types'
+import { ChatRoom, Message } from '../../types'
 import moment from 'moment';
 import 'moment/src/locale/en-gb';
 import 'moment/min/locales';

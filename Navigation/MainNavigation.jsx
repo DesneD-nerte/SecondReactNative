@@ -28,7 +28,7 @@ const MainNavigation = () => {
                 headerRightContainerStyle: {marginRight: 10}
         })}>
             <Tab.Screen
-                name="home"
+                name="Home"
                 component={ScheduleScreen}
                 options={{
                             tabBarIcon: ({ color, size }) => (

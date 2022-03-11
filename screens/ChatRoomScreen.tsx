@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { View, FlatList, StyleSheet, ImageBackground, Button } from 'react-native'
 import { Text } from 'react-native-elements'
-import ChatMessage from '../components/ChatMessage'
-import InputBox from '../components/InputBox'
+import ChatMessage from '../components/Chat/ChatMessage'
+import InputBox from '../components/Chat/InputBox'
 import chatsRoomData from '../data/Chats'
 import Background from '../assets/WhiteBackground.jpg';
-import DateMessage from '../services/DateMessage'
+import DateMessage from '../services/DateMessage';
 import $api from '../http'
 import Chats from '../data/Chats'
 import { useChat } from '../hooks/useChat'

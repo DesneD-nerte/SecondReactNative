@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, F
 import { io } from 'socket.io-client';
 import { Icon } from 'react-native-elements';
 import Background from '../assets/WhiteBackground.jpg';
-import ChatListItem from '../components/ChatListItem';
+import ChatListItem from '../components/Chat/ChatListItem';
 import ChatRooms from '../data/ChatRooms';
 import $api from '../http';
 import jwtDecode, { JwtPayload } from 'jwt-decode';

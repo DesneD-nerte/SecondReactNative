@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, Text, FlatList } from 'react-native'
-import UsersMessangerItem from '../components/UsersMessangerItem'
+import UsersMessangerItem from '../components/Chat/UsersMessangerItem'
 import ChatRooms from '../data/ChatRooms';
 import $api from '../http';
 
