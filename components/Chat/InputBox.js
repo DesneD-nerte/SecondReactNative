@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { io } from 'socket.io-client';
 import { Icon } from 'react-native-elements';
-import { useChat } from '../hooks/useChat';
+//import { useChat } from '../hooks/useChat';
 
-function InputBox({sendMessage}) {
+function InputBox() {
 
     //#region Socket.IO
 	const [message, setMessage] = useState('');
-	const [] = useChat()
+	//const [] = useChat() 
 	//const [socket, setSocket] = useState();
 
 	// useEffect(() => {
@@ -31,7 +31,7 @@ function InputBox({sendMessage}) {
 		
 		const fixedMessage = message.trim();
 		if(fixedMessage) {
-			sendMessage({message: message});
+			//sendMessage({message: message});
 			setMessage('');
 		}
 		// setChatMessages([...chatMessages, fixedMessage]);
@@ -53,6 +53,7 @@ function InputBox({sendMessage}) {
                     </TouchableOpacity>
                     <TextInput 
                         multiline
+						maxLength={140}
                         placeholder='Напишите сообщение'
                         style={styles.inputMessage} 
                         value={message} 
@@ -96,27 +97,26 @@ const styles = StyleSheet.create({
 	inputMessageContainer: {
 		flexDirection: 'row',
 		alignItems: 'flex-end',
-		marginRight: 20,
+		marginRight: 10,
 		minHeight: 35,
 		flex: 1
 	},
 
 	inputMessage: {
+		flex: 1,
 		fontSize: 16,
 		paddingLeft: 5,
-		minWidth: "100%"
 	},
 
 	enterMessageContainer: {
 		flexDirection: 'row',
 		alignItems: 'flex-end',
-		paddingLeft: 10
 	},
 
 	enterMessage: {
 		flexDirection: 'row',
 		height: 30,
 		alignItems: 'center',
-		marginHorizontal: 10
+		marginRight: 10
 	}
 })

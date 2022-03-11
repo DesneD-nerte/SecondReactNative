@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } fr
 import { Avatar, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
-import { ChatRoom, Message, User } from '../types';
+import { ChatRoom, Message, User } from '../../types';
 import moment from 'moment';
 
 moment.locale('ru');
