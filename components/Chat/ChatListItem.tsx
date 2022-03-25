@@ -10,7 +10,9 @@ moment.locale('ru');
 
 type ChatListItemProps = {
 	id: String,
-	chatRoom: ChatRoom
+	chatRoom: ChatRoom,
+	socket: any,
+	setChatLastMessages: any
 }
 
 const ChatListItem = (props: ChatListItemProps) => {
@@ -33,7 +35,9 @@ const ChatListItem = (props: ChatListItemProps) => {
 			id: user._id,
 			name: user.name,
 
-			roomId: chatRoom._id
+			roomId: chatRoom._id,
+
+			socket: props.socket
 		});
 	}
 

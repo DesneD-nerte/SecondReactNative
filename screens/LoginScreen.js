@@ -6,27 +6,34 @@ import { Button } from "react-native-elements";
 import { TokenContext } from "../context/tokenContext";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from "react-redux";
+import { changeProfileData } from "../store/profileDataReducer";
+import { mobileURI } from "../config/config";
 
 const LoginScreen = () => {
+
+    const dispatch = useDispatch();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const {isAuth, setIsAuth} = useContext(TokenContext);
 
     const loginEnter = async () => {
-        await axios.post("http://192.168.100.4:5000/api/auth/login", {username: username, password: password})
+        await axios.post(`${mobileURI}/api/auth/login`, {username: username, password: password})
         .then(async response => {
+            
             setIsAuth(true);
+            
+            const {_id, username, name, roles, email, imageUri} = response.data;
+            const storeData = {_id, username, name, roles, email, imageUri};
+            
+            dispatch(changeProfileData(storeData));
+
             await AsyncStorage.setItem('token', response.data.token);
         })
         .catch(err => console.log(err.message));
     }
-
-    useEffect(async () => {
-        // await AsyncStorage.clear();
-        //const token = await AsyncStorage.getItem('token');
-        // console.log("EFFECT", isAuth);
-    }, [])
 
     return(
         

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { View, FlatList, StyleSheet, ImageBackground, Button } from 'react-native'
 import { Text } from 'react-native-elements'
 import ChatMessage from '../components/Chat/ChatMessage'
@@ -8,7 +8,12 @@ import Background from '../assets/WhiteBackground.jpg';
 import DateMessage from '../services/DateMessage';
 import $api from '../http'
 import Chats from '../data/Chats'
+import { ChatType } from '../types';
 import { useChat } from '../hooks/useChat'
+import { executeGetMessages } from '../services/Messages'
+import { useDispatch } from 'react-redux'
+import { changeLastMessages } from '../store/messagesRecucer'
+
 
 let currentDate = new Date('1970.01.01');
 let previousDate = new Date('1970-01-01');
@@ -20,33 +25,26 @@ const monthNames = ["Января", "Февраля", "Марта", "Апрел�
 function ChatRoomScreen({route}) {
 
 	const [message, setMessage] = useState("");
-	const [chatMessages, setChatMessages] = useState(Chats);
+	const [chatMessages, setChatMessages] = useState<ChatType>();
 	
 	useEffect(() => {
 		const {myId, myName, id, name} = route.params;
 
-		console.log(myId, ' : ', myName, ' : ', id, ' : ', name,);
-
-		$api.get(`http://192.168.100.4:5000/messages/getChatRoomMessages`, {params: { myId: myId, myName: myName, id: id, name: name}})
-		.then((response) => {
-			setChatMessages(response.data);
-			console.log(response.data);
-		})
-		.catch(() => console.log("Ошибка загрузки"));
+		executeGetMessages(setChatMessages, myId, myName, id, name);
 	}, [])
 
 	return (
 		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
 			<View style={styles.container}>
 				{ 
-					chatMessages[0].messages[0].content === 'tekwjti43o56pjormghopfnhmd' 
+					!chatMessages
 					? 
 						<View style={styles.loading}>
 							<Text style={styles.loadingText}>Сообщений нет</Text>
 						</View>
 					:
-						<FlatList extraData={chatMessages[0]}
-							data={chatMessages[0].messages}
+						<FlatList extraData={chatMessages}
+							data={chatMessages.messages}
 							renderItem={({ item }) => {
 								currentDate = new Date(item.createdAt);
 								if(DateMessage.CheckDateMessage(currentDate, previousDate)) {
@@ -63,8 +61,7 @@ function ChatRoomScreen({route}) {
 							keyExtractor={(item, index) => index.toString()}>
 						</FlatList>
 				}
-				
-				<InputBox ></InputBox>
+				<InputBox socket={route.params.socket} setChatMessages={setChatMessages} params={route.params}></InputBox>
 			</View>
 		</ImageBackground>
 	)

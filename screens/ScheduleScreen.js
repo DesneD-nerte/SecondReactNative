@@ -1,10 +1,36 @@
 import { useEffect, useState } from "react";
-import { Button, FlatList, SafeAreaView } from "react-native";
+import { Button, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import mainLogo from '../assets/favicon.png';
-import { Agenda } from 'react-native-calendars';
+import { LocaleConfig, Agenda } from 'react-native-calendars';
 import { Avatar, Divider, Input } from "react-native-elements";
+import { color } from "react-native-elements/dist/helpers";
+ 
+LocaleConfig.locales['ru'] = {
+    monthNames: [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь'
+    ],
+    monthNamesShort: ['Янв.', 'Фвр.', 'Март', 'Апр.', 'Mай', 'Июнь', 'Июль', 'Авг.', 'Сен.', 'Окт.', 'Ноя.', 'Дек.'],
+    dayNames: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
+    dayNamesShort: ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'Вс.'],
+    today: "Сегодня"
+};
+
+LocaleConfig.defaultLocale = 'ru';
+
+const dayNamesShort = ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'Вс.'];
 
 const ScheduleScreen = () => {
 
@@ -20,17 +46,19 @@ const ScheduleScreen = () => {
 
     const renderItem = (item) => {
         return (
-            <View style={styles.mainContainer}>
-                <View style={styles.itemContainer}>
-                    <Text>{item.time}</Text>
-                    <Text>{item.title}</Text>
-                    <Text>453</Text>
+            <TouchableOpacity style={styles.container} onPress={e => alert('pressed item')}>
+                <View style={styles.mainContainer} >
+                    <View style={styles.itemContainer}>
+                        <Text>{item.time}</Text>
+                        <Text>{item.title}</Text>
+                        <Text>453</Text>
+                    </View>
+                    <View style={styles.itemContainer}>
+                        <Avatar size={30} rounded source={{uri: imageUrl}}></Avatar>
+                        <Text>Петров С.М.</Text>
+                    </View>
                 </View>
-                <View style={styles.itemContainer}>
-                    <Avatar size={30} rounded source={{uri: imageUrl}}></Avatar>
-                    <Text>Петров С.М.</Text>
-                </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -63,24 +91,34 @@ const ScheduleScreen = () => {
             minDate={'2022-01-10'}
             maxDate={'2023-01-10'}
 
-            // Specify how each item should be rendered in agenda
-            // renderItem={(item, firstItemInDay) => {
-            //     return (
-            //         <SafeAreaView style={styles.container}>
-                        
-            //         </SafeAreaView>
-            //     )
-            // }}
+
             renderItem={renderItem}
             
             // Specify how each date should be rendered. day can be undefined if the item is not first in that day
-            // renderDay={(day, item) => {
-            //     return <View></View>;
-            // }}
+            renderDay={(day, item) => {
+                if(day) {
+                    return (
+                        <View style={{width: 60, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 30, color: '#2089dc'}}>
+                                {day.getDate()}
+                            </Text>
+                            <Text style={{color: '#2089dc'}}>
+                                {dayNamesShort[day.getDay()]}
+                            </Text>
+                        </View>
+                    )
+                } else {
+                    return (
+                        <View style={{width: 60, justifyContent: 'center', alignItems: 'center'}}>
+                            
+                        </View>
+                    )
+                }
+            }}
             // // Specify how empty date content with no items should be rendered
             renderEmptyDate={() => {
                 return (
-                    <View>
+                    <View style={styles.emptyDateContainer}>
                         <Text>
                             Нет предметов
                         </Text>
@@ -132,6 +170,7 @@ const ScheduleScreen = () => {
                 agendaTodayColor: 'teal',
                 agendaKnobColor: 'blue'
             }}
+
             // Agenda container style
             style={{container: {
                 flex: 1,
@@ -166,10 +205,15 @@ const ScheduleScreen = () => {
 export default ScheduleScreen;
 
 const styles = StyleSheet.create({
+    container: {
+        margin: 5
+    },
+
     mainContainer: {
         backgroundColor: 'white',
         flexDirection: 'row',
-        margin: 5,
+        // margin: 5,
+        padding: 5,
         alignItems: 'center',
         flex: 1
     },
@@ -177,6 +221,13 @@ const styles = StyleSheet.create({
     itemContainer: {
         alignItems: 'center',
         flex: 1
+    },
+
+    emptyDateContainer: {
+        display: 'flex',
+        flex: 1, 
+        justifyContent:'center',
+        marginLeft: 5
     }
 })
 

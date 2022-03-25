@@ -2,42 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { io } from 'socket.io-client';
 import { Icon } from 'react-native-elements';
-//import { useChat } from '../hooks/useChat';
+import { Message } from '../../types';
+import { useDispatch, useSelector } from 'react-redux';
+import { executeGetMessages } from '../../services/Messages';
 
-function InputBox() {
+function InputBox({ socket, setChatMessages, setChatLastMessages, params }) {
 
-    //#region Socket.IO
-	const [message, setMessage] = useState('');
-	//const [] = useChat() 
-	//const [socket, setSocket] = useState();
+	const user = useSelector((state) => ({...state.profileData}))
 
-	// useEffect(() => {
-	// 	setSocket(io('http://192.168.100.4:5000'));
-	// 	console.log('socket connected');
+	const [text, setText] = useState('');
+	
 
-	// 	return (() => {
-	// 		console.log('Disconnecting socket...');
-  	// 		if(socket) {
-	// 			socket.disconnect();
-	// 		}
-	// 	})
-	// }, [])
+	useEffect(() => {
+		socket?.on('updateMessages', () => {
+			console.log('updateMessage INPUTBOX');
+
+			const {myId, myName, id, name} = params;
+			executeGetMessages(setChatMessages, myId, myName, id, name);
+		})
+	}, [])
 
 	const enterMessage = () => {
-		// if(message === null || message.match(/^ *$/) !== null) {
-		// 	alert("Введите корректное сообщение");
-		// 	return;
-		// }
-		
-		const fixedMessage = message.trim();
-		if(fixedMessage) {
-			//sendMessage({message: message});
-			setMessage('');
+		if(text === null || text.match(/^ *$/) !== null) {
+			alert("Введите корректное сообщение");
+			return;
 		}
-		// setChatMessages([...chatMessages, fixedMessage]);
-		// socket.emit("chat message", fixedMessage);
+		const fixedMessage = text.trim();
+		if(fixedMessage) {
+			setText('');
+		}
+		
+		const message: Message = {
+			content: fixedMessage,
+			createdAt: new Date(),
+			user: user
+		}
+
+		const receiverId = params.id;
+		console.log(message, receiverId);
+		socket.emit('sendMessage', { message, receiverId });
+
 	}
-	//#endregion
 
     return (
         <View style={styles.mainContainer}>
@@ -56,8 +61,8 @@ function InputBox() {
 						maxLength={140}
                         placeholder='Напишите сообщение'
                         style={styles.inputMessage} 
-                        value={message} 
-                        onChangeText={text => setMessage(text)} 
+                        value={text} 
+                        onChangeText={text => setText(text)} 
                         onSubmitEditing={enterMessage} 
                     ></TextInput>
                 </View>

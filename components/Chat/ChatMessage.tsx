@@ -48,7 +48,7 @@ function ChatMessage(props: ChatMessageProps) {
 					marginRight: isMyMessage() ? 0 : 50
 				}
 			]}>
-				<Text>{message.content}</Text>
+				<Text style={styles.messageContent}>{message.content}</Text>
 				<Text style={styles.messageCreated}>{dateMessage}</Text>
 			</View>
 
@@ -70,10 +70,13 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 		marginRight: 50,
 		borderRadius: 10,
-		padding: 10
+		padding: 10,
+		paddingBottom: 5
 	},
-	
+	messageContent: {
+		fontSize: 16
+	},
 	messageCreated: {
-		alignSelf: 'flex-end'
+		alignSelf: 'flex-end',
 	}
 })

@@ -18,6 +18,7 @@
     "axios": "^0.25.0",
     "expo": "^44.0.5",
     "expo-cli": "^5.0.3",
+    "expo-image-picker": "~12.0.1",
     "expo-status-bar": "~1.2.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
@@ -27,10 +28,13 @@
     "react-native-calendars": "^1.1276.0",
     "react-native-device-info": "^8.4.9",
     "react-native-elements": "^3.4.2",
+    "react-native-extended-stylesheet": "^0.12.0",
     "react-native-image-picker": "^4.7.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-web": "0.17.1",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
     "socket.io-client": "^4.4.1"
   },
   "devDependencies": {

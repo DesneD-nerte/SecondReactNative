@@ -1,16 +1,19 @@
 import { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, Platform, PermissionsAndroid } from "react-native"
+import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, Platform, PermissionsAndroid } from "react-native";
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { Avatar, Button, Icon } from "react-native-elements";
 import axios from "axios";
 import $api from '../http/index';
 import { TokenContext } from "../context/tokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { mobileURI } from "../config/config";
 
 const MyProfileScreen = ({navigation, route}) => {
-    const imageUrl = 'https://randomuser.me/api/portraits/men/36.jpg';
 
     const [isLoading, setIsLoading] = useState(true);
+    const [myId, setMyid] = useState('');
     const [nameAndSurname, setNameAndSurname] = useState('');
     const [login, setLogin] = useState('');
     const [roles, setRoles] = useState([]);
@@ -18,8 +21,9 @@ const MyProfileScreen = ({navigation, route}) => {
     const {isAuth, setIsAuth} = useContext(TokenContext);
 
     useEffect(() => {
-        $api.get(`http://192.168.100.4:5000/myprofile`)
+        $api.get(`${mobileURI}/myprofile`)
         .then(response => {
+            setMyid(response.data.id);
                 setNameAndSurname(response.data.name);
                 setLogin(response.data.username);
                 setRoles(response.data.roles);
@@ -35,45 +39,36 @@ const MyProfileScreen = ({navigation, route}) => {
         setIsAuth(false);
     };
 
-    // const changeImage = async () => {
-    //     const result = await launchImageLibrary({mediaType: 'photo'})
-    //     .catch(error => console.log(error));
-
-    //     console.log(result.assets);
-    // }
-
-    const changeImage = (type) => {
-        let options = {
-            mediaType: type,
-            maxWidth: 300,
-            maxHeight: 550,
+    const changeImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            //aspect: [4, 3],
             quality: 1,
-        };
-        launchImageLibrary(options, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                alert('User cancelled camera picker');
-                return;
-            } else if (response.errorCode == 'camera_unavailable') {
-                alert('Camera not available on device');
-                return;
-            } else if (response.errorCode == 'permission') {
-                alert('Permission not satisfied');
-                return;
-            } else if (response.errorCode == 'others') {
-                alert(response.errorMessage);
-                return;
-            }
-            console.log('base64 -> ', response.base64);
-            console.log('uri -> ', response.uri);
-            console.log('width -> ', response.width);
-            console.log('height -> ', response.height);
-            console.log('fileSize -> ', response.fileSize);
-            console.log('type -> ', response.type);
-            console.log('fileName -> ', response.fileName);
-            setFilePath(response);
         });
+
+        let localUri = result.uri;
+        let filename = localUri.split('/').pop();
+        result.name = filename;
+
+        let bodyFormData = new FormData();
+        bodyFormData.append('file', {
+            uri: result.uri,
+            type: 'image/jpeg',
+            name: result.name
+        });
+        bodyFormData.append('id', myId);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', `${mobileURI}/upload`);
+        xhr.send(bodyFormData);
+
+        alert('Аватар изменен');
+
+        setTimeout(() => {
+            navigation.goBack();
+        }, 1000);
     };
     
 
@@ -140,12 +135,12 @@ const MyProfileScreen = ({navigation, route}) => {
                         </View>  
                                               
                     </View>
-                    
             }
            
         </View>
     )
 }
+
 export default MyProfileScreen;
 
 const styles = StyleSheet.create({
@@ -169,20 +164,19 @@ const styles = StyleSheet.create({
     },
 
     infoContainer: {
-        justifyContent: 'center',
         marginLeft: 20,
-        marginBottom: 15,
     },
 
     oneProperty: {
         borderBottomWidth: 0.5,
-        borderColor: 'lightgray'
+        borderColor: 'lightgray',
+        justifyContent: 'center',
+        height: 65
     },
-    
+
     propertiesName: {
         color: '#c1c1c1',
         fontSize: 15,
-        marginTop: 10
     },
 
     propertiesValue: {
@@ -244,5 +238,4 @@ const styles = StyleSheet.create({
     textOneItem: {
         fontSize: 16
     }
-})
-
+});

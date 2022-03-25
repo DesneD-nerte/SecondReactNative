@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import io from 'socket.io-client'
+import { mobileURI } from '../config/config'
 
 
-const SERVER_URL = 'http://192.168.100.4:5000'
+const SERVER_URL = mobileURI
 
-export const useChat = (roomId) => {
+export const useChat = () => {
 
-	//const [users, setUsers] = useState([])
-	const [messages, setMessages] = useState([])
+	//const user = 
+  	const [users, setUsers] = useState([])
+  	const [messages, setMessages] = useState([])
 
 	// useRef() используется не только для получения доступа к DOM-элементам,
 	// но и для хранения любых мутирующих значений в течение всего жизненного цикла компонента
@@ -57,11 +59,7 @@ export const useChat = (roomId) => {
 	// принимает объект с текстом сообщения и именем отправителя
 	const sendMessage = ({ messageText, senderName }) => {
 		// добавляем в объект id пользователя при отправке на сервер
-		socketRef.current.emit('message:add', {
-			userId,
-			messageText,
-			senderName
-		})
+		socket.emit('message:add', message)
 	}
 
 	//функция удаления сообщения по id
