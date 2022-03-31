@@ -6,7 +6,8 @@ import NewsScreen from "../screens/NewsScreen";
 import ScheduleScreen from "../screens/ScheduleScreen";
 import MessengerScreen from "../screens/MessengerScreen";
 import AcademicPerformanceScreen from "../screens/AcademicPerformanceScreen";
-import { Button } from "react-native-elements";
+import { Button, Input } from "react-native-elements";
+import { TextInput, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +26,7 @@ const MainNavigation = () => {
                     }}>
                 </Button>
                 ),
-                headerRightContainerStyle: {marginRight: 10}
+                //headerRightContainerStyle: {marginRight: 10}
         })}>
             <Tab.Screen
                 name="Home"
@@ -48,11 +49,11 @@ const MainNavigation = () => {
             <Tab.Screen
                 name="Chat"
                 component={MessengerScreen}
-                options={{
+                options={({navigation, route}) => ({
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name="message-reply-text" color={color} size={size} />
-                            )
-                        }}>
+                            ),
+                        })}>
             </Tab.Screen>
             <Tab.Screen
                 name="Performance"

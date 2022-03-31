@@ -7,7 +7,7 @@ export type User = {
     name: String,
     roles: Array<String>,
     email: String,
-	imageUri: String
+	imageUri?: String
 }
 
 export type Message = {
@@ -18,13 +18,13 @@ export type Message = {
 }
 
 export type ChatRoom = {
-    _id: String;
+    _id?: String;
     users: User[];
     lastMessage: Message;
 }
 
 export type ChatType = {
-	_id: String;
+	_id?: String;
 	users: Array<User>;
 	messages: Array<Message>;
 }

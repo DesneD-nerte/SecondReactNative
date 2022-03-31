@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { io } from 'socket.io-client';
-import { Icon } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import Background from '../assets/WhiteBackground.jpg';
 import ChatListItem from '../components/Chat/ChatListItem';
 import ChatRooms from '../data/ChatRooms';
@@ -21,45 +21,24 @@ type MyJwt = {
 
 const MessengerScreen = ({navigation}) => {
 
-	const user = useSelector((state) => ({...state.profileData}));
+	const myData = useSelector((state) => ({...state.profileData}));
 
-	const [chatLastMessages, setChatLastMessages] = useState<ChatRoom>();
-	const [myId, setMyId] = useState('');
+	const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);//Array не было
+	const [showingChatLastMessages, setShowingChatLastMessages] = useState<Array<ChatRoom>>();
+	//const [myId, setMyId] = useState('');
 	const [socket, setSocket] = useState(null);
+	//const [socket, setSocket] = useState(io(`${mobileURI}`).emit('logged-in', me._id));
+
+	const [isVisibleSearchInput, setIsVisibleSearchInput] = useState(false);
+	const [searchedUser, setSearcherUser] = useState('');
 	
-	// socket?.on('connect', () => {
-	// 	console.log('client connected');
-	// });
-
-	// socket?.on('getMessages', () => {
-	// 	console.log('getMessages event client');
-	// });
-
-	// useEffect(() => {
-	// 	AsyncStorage.getItem('token')
-	// 	.then((token) => {
-	// 		const tokenData = jwtDecode<MyJwt>(token);
-	// 		setMyId(tokenData.id);
-
-	// 		setSocket(io('http://192.168.100.4:5000').emit('logged-in', tokenData.id));
-
-	// 		$api.get(`http://192.168.100.4:5000/messages/getLastMessages`, {params: { myId: tokenData.id }})
-	// 		.then((response) => {
-	// 			setChatLastMessages(response.data);
-				
-	// 		})
-	// 		.catch(() => console.log("Ошибка при загрузке lastMessage"));
-	// 	})
-	// 	.catch(() => console.log('Ошибка при чтении токена'));
-	// }, [])
-
 	useEffect(() => {
-		setSocket(io(`${mobileURI}`).emit('logged-in', user._id));
+		setSocket(io(`${mobileURI}`).emit('logged-in', myData._id));
 
-		$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: user._id }})
+		$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
 			.then((response) => {
-				console.log(response.data);
 				setChatLastMessages(response.data);
+				setShowingChatLastMessages(response.data);
 			})
 			.catch(() => console.log("Ошибка при загрузке lastMessage"));
 	}, [])
@@ -69,9 +48,10 @@ const MessengerScreen = ({navigation}) => {
 		socket?.on('updateMessages', () => {
 			console.log('updateMessage client');
 	
-			$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: user._id }})
+			$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
 				.then((response) => {
 					setChatLastMessages(response.data);
+					setShowingChatLastMessages(response.data);
 				})
 				.catch(() => console.log("Ошибка при загрузке lastMessage"));
 		})
@@ -81,15 +61,75 @@ const MessengerScreen = ({navigation}) => {
 		 };
 	}, [socket])
 
+	useEffect(() => {
+		if(searchedUser) {
+			let arrayOfArguments = searchedUser.toLowerCase().split(' ');
+			arrayOfArguments = arrayOfArguments.filter(argument => argument !== '');
+
+			const croppedLastMessages = chatLastMessages.filter(item => {
+				const userName = item.users.find(oneUser => {
+					if(oneUser._id !== myData._id) {
+						for (const oneElement of arrayOfArguments) {
+							if(oneUser.name.toLowerCase().includes(oneElement)) {
+								return true;
+							}
+						}
+					} 
+				});
+
+				if(userName) {
+					return true;
+				} else {
+					return false;
+				} 
+			})
+			setShowingChatLastMessages(croppedLastMessages);
+		}
+		
+	}, [searchedUser])
+
+	useLayoutEffect(() => {
+		if(isVisibleSearchInput) {
+			navigation.setOptions({
+				headerRight: () => (
+					<View style={{ flexDirection: 'row', width: '100%', flex: 1, justifyContent: 'space-between', alignItems: 'center'}}>
+						<TextInput autoFocus={true} onChangeText={text => setSearcherUser(text) } placeholder="Поиск" style={{fontSize: 16, flex: 1}}></TextInput>
+						<Button  
+							icon={{type: 'ionicons', name: 'search', color: "#55ADFF"}}
+							type="clear"
+							onPress={() => {
+								setIsVisibleSearchInput(false);
+								setShowingChatLastMessages(chatLastMessages);
+							}}>
+						</Button>
+					</View>
+			)
+			});
+		} else {
+			navigation.setOptions({
+				headerRight: () => (
+					<View style={{ flexDirection: 'row', width: '100%', flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+						<Button  
+							icon={{type: 'ionicons', name: 'search', color: "#55ADFF"}}
+							type="clear"
+							onPress={() => {
+								setIsVisibleSearchInput(true);
+							}}>
+						</Button>
+					</View>
+			)
+			});
+		}
+	  }, [isVisibleSearchInput]);
+
 	return (
 		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
 			<View style={{flex: 1}}>
 				<View style={styles.messagesContainer}>
 					<FlatList
-						extraData={chatLastMessages}
-						data={chatLastMessages}
-						//renderItem={({ item }) => <ChatListItem chatRoom={ item } id={ myId } socket={ socket } setChatLastMessages={setChatLastMessages}/>}
-						renderItem={({ item }) => <ChatListItem chatRoom={ item } id={ user._id } socket={ socket }/>}
+						extraData={showingChatLastMessages}
+						data={showingChatLastMessages}
+						renderItem={({ item }) => <ChatListItem chatRoom={ item } id={ myData._id } socket={ socket }/>}
 						keyExtractor={(item, index) => index.toString()}
 					/>
 				</View>
@@ -101,7 +141,7 @@ const MessengerScreen = ({navigation}) => {
 						type='ionicon'
 						color='#2CA5FF'
 						// onPress={() => navigation.navigate('AddUser')}
-						onPress={() => navigation.navigate('UsersMessengerScreen')}
+						onPress={() => navigation.navigate('UsersMessengerScreen', {socket: socket})}
 					/>
 				</View>
 

@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 import { ChatRoom, Message, User } from '../../types';
 import moment from 'moment';
+import { mobileURI } from '../../config/config';
 
 moment.locale('ru');
 
@@ -21,7 +22,7 @@ const ChatListItem = (props: ChatListItemProps) => {
 	const me: User = chatRoom.users.find(user => user._id === id);
 	const user: User = chatRoom.users.find(user => user._id !== id);
 	
-	const imageUri = user.imageUri.replace('localhost', '192.168.100.4');
+	const imageUri = user.imageUri.replace('http://localhost:5000', mobileURI);
 
 	const dateLastMessage = moment(chatRoom.lastMessage.createdAt).format('L'); 
 
@@ -34,8 +35,6 @@ const ChatListItem = (props: ChatListItemProps) => {
 			
 			id: user._id,
 			name: user.name,
-
-			roomId: chatRoom._id,
 
 			socket: props.socket
 		});

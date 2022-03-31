@@ -10,9 +10,10 @@ import $api from '../http'
 import Chats from '../data/Chats'
 import { ChatType } from '../types';
 import { useChat } from '../hooks/useChat'
-import { executeGetMessages } from '../services/Messages'
+import { executeGetMessages, getDirectMessages } from '../services/Messages'
 import { useDispatch } from 'react-redux'
 import { changeLastMessages } from '../store/messagesRecucer'
+import { mobileURI } from '../config/config'
 
 
 let currentDate = new Date('1970.01.01');
@@ -26,11 +27,15 @@ function ChatRoomScreen({route}) {
 
 	const [message, setMessage] = useState("");
 	const [chatMessages, setChatMessages] = useState<ChatType>();
-	
+
+	const {chatRoom} = route.params;
+
 	useEffect(() => {
 		const {myId, myName, id, name} = route.params;
 
-		executeGetMessages(setChatMessages, myId, myName, id, name);
+		// executeGetMessages(setChatMessages, myId, myName, id, name);
+
+		getDirectMessages(setChatMessages, chatRoom, myId, myName, id, name)
 	}, [])
 
 	return (
@@ -61,7 +66,7 @@ function ChatRoomScreen({route}) {
 							keyExtractor={(item, index) => index.toString()}>
 						</FlatList>
 				}
-				<InputBox socket={route.params.socket} setChatMessages={setChatMessages} params={route.params}></InputBox>
+				<InputBox socket={route.params.socket} chatMessages={chatMessages} setChatMessages={setChatMessages} params={route.params}></InputBox>
 			</View>
 		</ImageBackground>
 	)

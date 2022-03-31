@@ -1,10 +1,11 @@
 import React, {useEffect, useContext, useState} from "react";
-import { StyleSheet, View, Text, FlatList } from "react-native"
+import { StyleSheet, View, Text, FlatList, ImageBackground } from "react-native"
 import moment from 'moment';
 import $api from "../http";
 import { News } from "../types";
 import { Card } from "react-native-elements";
 import { mobileURI } from "../config/config";
+import Background from '../assets/BlackBackground.jpg';
 
 
 const NewsScreen = ({ navigation, route }) => {
@@ -21,32 +22,34 @@ const NewsScreen = ({ navigation, route }) => {
 	}, [])
 
     return(
-        <View>
-            <FlatList
-                data={news}
-                renderItem={({item}) => (
-                    // <View style={styles.mainContainer}>
-                    //     <View style={styles.headContainer}>
-                    //         <Text>{item.name}</Text>
-                    //         <Text>{moment(item.createdAt).format('LL')}</Text>
-                    //     </View>
-                    //     <View style={styles.contentContainer}>
-                    //         <Text>{item.content}</Text>
-                    //     </View>
-                    // </View>
-                    <Card containerStyle={{ marginTop: 15 }}>
-                        <Card.Title>{item.name}</Card.Title>
-                        <Card.Divider />
-                        <Text>
-                            {item.content}
-                        </Text>
-                        <Text style={{marginTop: 10, color: 'lightgray', alignSelf: 'flex-end'}}>
-                            {moment(item.createdAt).format('L')}
-                        </Text>
-                  </Card>
-                )}>
-            </FlatList>
-        </View>
+		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
+            <View>
+                <FlatList
+                    data={news}
+                    renderItem={({item}) => (
+                        // <View style={styles.mainContainer}>
+                        //     <View style={styles.headContainer}>
+                        //         <Text>{item.name}</Text>
+                        //         <Text>{moment(item.createdAt).format('LL')}</Text>
+                        //     </View>
+                        //     <View style={styles.contentContainer}>
+                        //         <Text>{item.content}</Text>
+                        //     </View>
+                        // </View>
+                        <Card containerStyle={{ marginTop: 15 }}>
+                            <Card.Title>{item.name}</Card.Title>
+                            <Card.Divider />
+                            <Text>
+                                {item.content}
+                            </Text>
+                            <Text style={{marginTop: 10, color: 'lightgray', alignSelf: 'flex-end'}}>
+                                {moment(item.createdAt).format('L')}
+                            </Text>
+                    </Card>
+                    )}>
+                </FlatList>
+            </View>
+        </ImageBackground>
     )
 }
 
