@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, Platform, PermissionsAndroid } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, Platform, PermissionsAndroid, ScrollView } from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Avatar, Button, Icon } from "react-native-elements";
 import axios from "axios";
@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { mobileURI } from "../config/config";
+import { useDispatch, useSelector } from "react-redux";
 
 const MyProfileScreen = ({navigation, route}) => {
 
@@ -20,18 +21,27 @@ const MyProfileScreen = ({navigation, route}) => {
     const [imageUri, setImageUri] = useState('');
     const {isAuth, setIsAuth} = useContext(TokenContext);
 
+	const myData = useSelector((state) => ({...state.profileData}));
+
+    // useEffect(() => {
+    //     $api.get(`${mobileURI}/myprofile`)
+    //     .then(response => {
+    //         setMyid(response.data.id);
+    //             setNameAndSurname(response.data.name);
+    //             setLogin(response.data.username);
+    //             setRoles(response.data.roles);
+    //             const fixedImageUri = response.data.imageUri.replace('localhost', '192.168.100.4');
+    //             setImageUri(fixedImageUri);
+    //             setIsLoading(false);
+    //         })
+    //     .catch((error) => console.log(error.message))
+    // }, [])
+
     useEffect(() => {
-        $api.get(`${mobileURI}/myprofile`)
-        .then(response => {
-            setMyid(response.data.id);
-                setNameAndSurname(response.data.name);
-                setLogin(response.data.username);
-                setRoles(response.data.roles);
-                const fixedImageUri = response.data.imageUri.replace('localhost', '192.168.100.4');
-                setImageUri(fixedImageUri);
-                setIsLoading(false);
-            })
-        .catch((error) => console.log(error.message))
+        const fixedImageUri = myData.imageUri.replace('http://localhost:5000', mobileURI);
+        setImageUri(fixedImageUri);
+
+        setIsLoading(false);
     }, [])
 
     const logOut = (event) => {   
@@ -82,7 +92,7 @@ const MyProfileScreen = ({navigation, route}) => {
                         <ActivityIndicator size="large" color="#33a8ff"/>
                     </View>
                 :
-                    <View style={styles.mainContainer}>
+                    <ScrollView style={styles.mainContainer}>
                         <View style={styles.avatarContainer}>
                             <Avatar style={{ height: "100%", width: "100%" }} source={{uri: imageUri + '?' + new Date(), cache: 'reload'}}></Avatar>
                         </View>
@@ -90,15 +100,44 @@ const MyProfileScreen = ({navigation, route}) => {
                         <View style={styles.infoContainer}>
                             <View style={styles.oneProperty}>
                                 <Text style={styles.propertiesName}>Name:</Text>
-                                <Text style={styles.propertiesValue}>{nameAndSurname}</Text>
+                                <Text style={styles.propertiesValue}>{myData.name}</Text>
                             </View>
+                            {
+                                myData.faculties.length !== 0 &&
+                                <View style={styles.oneProperty}>
+                                    <Text style={styles.propertiesName}>Faculty:</Text>
+                                    <Text style={styles.propertiesValue}>
+                                        {myData.faculties.map((item) => item.name + ' ')}
+                                    </Text>
+                                </View>
+                            }
+                            {
+                                myData.departments.length !== 0 &&
+                                <View style={styles.oneProperty}>
+                                    <Text style={styles.propertiesName}>Department:</Text>
+                                    <Text style={styles.propertiesValue}>
+                                        {myData.departments.map((item) => item.name + ' ')}
+                                    </Text>
+                                </View>
+                            }
+                            {
+                                myData.groups.length !== 0 &&
+                                <View style={styles.oneProperty}>
+                                    <Text style={styles.propertiesName}>Group:</Text>
+                                    <Text style={styles.propertiesValue}>
+                                        {myData.groups.map((item) => item.name + ' ')}
+                                    </Text>
+                                </View>
+                            }
                             <View style={styles.oneProperty}>
                                 <Text style={styles.propertiesName}>Login:</Text>
-                                <Text style={styles.propertiesValue}>{login}</Text>
+                                <Text style={styles.propertiesValue}>{myData.username}</Text>
                             </View>
-                            <View style={styles.oneProperty}>
+                            <View style={[styles.oneProperty, styles.lastOneProperty]}>
                                 <Text style={styles.propertiesName}>Status:</Text>
-                                <Text style={styles.propertiesValue}>{roles}</Text>
+                                <Text style={styles.propertiesValue}>
+                                    {myData.roles.map((item) => item.value + ' ')}
+                                </Text>
                             </View>
                         </View>
 
@@ -134,7 +173,7 @@ const MyProfileScreen = ({navigation, route}) => {
                                 </TouchableOpacity>
                         </View>  
                                               
-                    </View>
+                    </ScrollView>
             }
            
         </View>
@@ -160,7 +199,8 @@ const styles = StyleSheet.create({
     avatarContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1
+        flex: 1,
+        minHeight: 175
     },
 
     infoContainer: {
@@ -171,11 +211,16 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderColor: 'lightgray',
         justifyContent: 'center',
-        height: 65
+        paddingVertical: 10
+    },
+
+    lastOneProperty: {
+        borderBottomWidth: 0
     },
 
     propertiesName: {
-        color: '#c1c1c1',
+        // color: '#c1c1c1',
+        color: '#3396E2',
         fontSize: 15,
     },
 

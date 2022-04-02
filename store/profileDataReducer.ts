@@ -6,7 +6,10 @@ const initialState: User = {
     name: '',
     roles: [],
     email: '',
-	imageUri: ''
+	imageUri: '',
+	faculties: [],
+	departments: [],
+	groups: [],
 }
 
 const CHANGE_DATA = 'CHANGE_DATA';

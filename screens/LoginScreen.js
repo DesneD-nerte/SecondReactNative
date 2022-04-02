@@ -25,8 +25,8 @@ const LoginScreen = () => {
             
             setIsAuth(true);
             
-            const {_id, username, name, roles, email, imageUri} = response.data;
-            const storeData = {_id, username, name, roles, email, imageUri};
+            const {_id, username, name, roles, email, imageUri, faculties, departments, groups} = response.data;
+            const storeData = {_id, username, name, roles, email, imageUri, faculties, departments, groups};
             
             dispatch(changeProfileData(storeData));
 

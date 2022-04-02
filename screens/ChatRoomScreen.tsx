@@ -25,6 +25,8 @@ const monthNames = ["Января", "Февраля", "Марта", "Апрел�
 
 function ChatRoomScreen({route}) {
 
+	const flatListRef = useRef<any>();
+
 	const [message, setMessage] = useState("");
 	const [chatMessages, setChatMessages] = useState<ChatType>();
 
@@ -34,9 +36,16 @@ function ChatRoomScreen({route}) {
 		const {myId, myName, id, name} = route.params;
 
 		// executeGetMessages(setChatMessages, myId, myName, id, name);
-
-		getDirectMessages(setChatMessages, chatRoom, myId, myName, id, name)
+		getDirectMessages(setChatMessages, chatRoom, myId, myName, id, name);
 	}, [])
+
+	useEffect(() => {
+		setTimeout(() => {
+			if(flatListRef.current !== undefined) {
+				flatListRef.current.scrollToEnd();
+			}
+		}, 150);
+	}, [chatMessages])
 
 	return (
 		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
@@ -49,21 +58,40 @@ function ChatRoomScreen({route}) {
 						</View>
 					:
 						<FlatList extraData={chatMessages}
-							data={chatMessages.messages}
-							renderItem={({ item }) => {
+							// inverted
+							data={[...chatMessages.messages]}
+							// contentContainerStyle={{ flexDirection: 'column-reverse' }}
+							renderItem={({ item, index }) => {
 								currentDate = new Date(item.createdAt);
+								// if(index === 0) previousDate = currentDate; 
 								if(DateMessage.CheckDateMessage(currentDate, previousDate)) {
+									// console.log('main if', item.content);
+									// console.log('currentData:', currentDate, 'previousData', previousDate);
 									previousDate = currentDate;
-									return <View>
-												<View style={{backgroundColor: 'rgba(163, 163, 163, 0.5)', borderRadius: 30, paddingHorizontal: 5, paddingVertical: 3, alignSelf: 'center'}}>
-													<Text>{currentDate.getDate() + ' ' + monthNames[currentDate.getMonth()]}</Text>	
-												</View>
-												<ChatMessage message={item}></ChatMessage>
+									const jsxToReturn =
+										<View>
+											<View style={{backgroundColor: 'rgba(163, 163, 163, 0.5)', borderRadius: 30, paddingHorizontal: 5, paddingVertical: 3, alignSelf: 'center'}}>
+												<Text>{previousDate.getDate() + ' ' + monthNames[previousDate.getMonth()]}</Text>	
 											</View>
+											<ChatMessage message={item}></ChatMessage>
+										</View>
+									// previousDate = currentDate;
+									return jsxToReturn;
 								}
+								// else {
+								// 	console.log('else', item.content);
+								// 	console.log('currentData:', currentDate, 'previousData', previousDate);
+								// }
 								return <ChatMessage message={item}></ChatMessage>
 							}}
-							keyExtractor={(item, index) => index.toString()}>
+							keyExtractor={(item, index) => index.toString()}
+							onLayout={() => {
+								setTimeout(() => {
+									flatListRef.current.scrollToEnd({ animated: true })
+								}, 150);
+							}}
+							ref={flatListRef}
+							>
 						</FlatList>
 				}
 				<InputBox socket={route.params.socket} chatMessages={chatMessages} setChatMessages={setChatMessages} params={route.params}></InputBox>

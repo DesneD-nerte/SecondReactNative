@@ -7,7 +7,10 @@ export type User = {
     name: String,
     roles: Array<String>,
     email: String,
-	imageUri?: String
+	imageUri?: String,
+    faculties?: Array<String>,
+    departments?: Array<String>,
+    groups?: Array<String>
 }
 
 export type Message = {
