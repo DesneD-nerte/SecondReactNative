@@ -6,7 +6,13 @@ import mainLogo from '../assets/favicon.png';
 import { LocaleConfig, Agenda } from 'react-native-calendars';
 import { Avatar, Divider, Input } from "react-native-elements";
 import { color } from "react-native-elements/dist/helpers";
- 
+import $api from "../http";
+import { mobileURI } from "../config/config";
+import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
+import moment from 'moment';
+
+moment.locale('ru');
+
 LocaleConfig.locales['ru'] = {
     monthNames: [
       'Январь',
@@ -33,14 +39,18 @@ LocaleConfig.defaultLocale = 'ru';
 const dayNamesShort = ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'Вс.'];
 
 const ScheduleScreen = () => {
+    const [refreshing, setRefreshing] = useState(true);
 
-    const [items, setItems] = useState({
-        '2022-01-24': [{title: 'Programming', time: '10:15'}, {title: 'Math', time: '12:00'}, {title: 'Modelling', time: '14:10'}],
-        '2022-01-25': [{title: 'Physics', time: '10.15'}],
-        '2022-01-26': [],
-        '2022-01-27': [],
-        '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}]
-    });
+    const [items, setItems] = useState(
+        // {
+        // '2022-01-24': [{title: 'Programming', time: '10:15'}, {title: 'Math', time: '12:00'}, {title: 'Modelling', time: '14:10'}],
+        // '2022-01-25': [{title: 'Physics', time: '10.15'}],
+        // '2022-01-26': [],
+        // '2022-01-27': [],
+        // '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}],
+        // }
+        {}
+    );
 
     const imageUrl = 'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg';
 
@@ -63,34 +73,45 @@ const ScheduleScreen = () => {
     }
 
 	useEffect(() => {
+        if(refreshing === true) {
+            $api.get(`${mobileURI}/api/currentlessons`)
+            .then(response => {
+                const currentLessons = response.data;
+                sortCurrentLessonsByDate(currentLessons);
 
-	}, []);
+                const newItems = {};
+                for (const oneCurrentLesson of currentLessons) {
+                    const date = new Date(oneCurrentLesson.beginDate);
+                    const dateForItem = date.getFullYear()
+                        + '-' +
+                        ('0'+(date.getMonth()+1)).slice(-2)
+                        + '-' +
+                        ('0'+(date.getDate())).slice(-2);
+                    const beginTime = ('0'+(date.getHours())).slice(-2) 
+                        + ':' + 
+                        ('0'+(date.getMinutes())).slice(-2)
+
+                    newItems[dateForItem] = [{title: oneCurrentLesson.name.name, time: beginTime}];
+                }
+                
+                setItems(newItems);
+                onRefresh(false);
+            })
+        } 
+        
+	}, [refreshing]);
+
+    const onRefresh = (boolean) => {
+        setRefreshing(boolean);
+    }
 
     return(
     <SafeAreaView style={{flex: 1}}>
         <Agenda 
             items={items}
-            // Callback that gets called when items for a certain month should be loaded (month became visible)
-            loadItemsForMonth={month => {
-                console.log('trigger items loading');
-            }}
-            // Callback that fires when the calendar is opened or closed
-            onCalendarToggled={calendarOpened => {
-                console.log(calendarOpened);
-            }}
-            // Callback that gets called on day press
-            onDayPress={day => {
-                console.log('day pressed');
-            }}
-            // Callback that gets called when day changes while scrolling agenda list
-            onDayChange={day => {
-                console.log('day changed');
-            }}
 
-            selected={'2022-01-24'}
             minDate={'2022-01-10'}
             maxDate={'2023-01-10'}
-
 
             renderItem={renderItem}
             
@@ -158,9 +179,9 @@ const ScheduleScreen = () => {
             //     '2012-05-18': {disabled: true}
             // }}
             // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
-            onRefresh={() => console.log('refreshing...')}
+            onRefresh={onRefresh}
             // Set this true while waiting for new data from a refresh
-            refreshing={false}
+            refreshing={refreshing}
             // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView
             refreshControl={null}
             // Agenda theme
@@ -184,25 +205,12 @@ const ScheduleScreen = () => {
                 fontSize: 42,
             },}}
         />
-    </SafeAreaView>
-        // <View style={styles.container}>
-		// 	<StatusBar style="auto" />
-		// 	<Agenda 
-        //     />
-			
-		// 	{/* <Text>Open up App.js to start working on your app!</Text>
-		// 	<Image source={mainLogo} alt='MainLogo'></Image>
-		// 	<Button
-		// 		title="Go to News Screen"
-		// 		onPress={() => navigation.navigate('News', {name: text})}>                    
-		// 	</Button> */}
-        // </View>
-        
+    </SafeAreaView>        
     );
-
 };
 
 export default ScheduleScreen;
+
 
 const styles = StyleSheet.create({
     container: {

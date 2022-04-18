@@ -12,6 +12,8 @@
   "dependencies": {
     "@expo/metro-config": "^0.3.9",
     "@react-native-async-storage/async-storage": "^1.16.1",
+    "@react-native-community/datetimepicker": "^6.1.2",
+    "@react-native-picker/picker": "^2.4.1",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",

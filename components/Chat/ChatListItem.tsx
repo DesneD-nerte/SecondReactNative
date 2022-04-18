@@ -22,7 +22,9 @@ const ChatListItem = (props: ChatListItemProps) => {
 	const me: User = chatRoom.users.find(user => user._id === id);
 	const user: User = chatRoom.users.find(user => user._id !== id);
 	
-	const imageUri = user.imageUri.replace('http://localhost:5000', mobileURI);
+	const imageUri = user.imageUri?.replace('http://localhost:5000', mobileURI);
+	let titleAvatarArray = user.name.split(' ', 2);
+	const titleAvatar = titleAvatarArray.map(oneName => oneName.charAt(0)).join('');
 
 	const dateLastMessage = moment(chatRoom.lastMessage.createdAt).format('L'); 
 
@@ -44,7 +46,12 @@ const ChatListItem = (props: ChatListItemProps) => {
 		<TouchableOpacity onPress={onClick}>
 			<View style={styles.container}>
 				<View style={styles.leftContainer}>
-					<Avatar size={54} rounded source={imageUri ? { uri: imageUri } : {}}></Avatar>
+					{imageUri
+						?
+						<Avatar size={54} rounded source={imageUri ? { uri: imageUri } : {}}></Avatar>
+						:
+						<Avatar size={54} rounded title={titleAvatar} titleStyle={{color: 'white'}} containerStyle={{backgroundColor: '#52B4FF'}}></Avatar>
+					}
 					<View style={styles.midContainer}>
 						<Text numberOfLines={1} style={styles.username}>{user.name}</Text>
 						<Text numberOfLines={1} style={styles.textMessage}>{chatRoom.lastMessage.content}</Text>

@@ -10,6 +10,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { mobileURI } from "../config/config";
 import { useDispatch, useSelector } from "react-redux";
+import IconUser from '../assets/iconUser.png';
 
 const MyProfileScreen = ({navigation, route}) => {
 
@@ -38,8 +39,10 @@ const MyProfileScreen = ({navigation, route}) => {
     // }, [])
 
     useEffect(() => {
-        const fixedImageUri = myData.imageUri.replace('http://localhost:5000', mobileURI);
-        setImageUri(fixedImageUri);
+        if(myData.imageUri) {
+            const fixedImageUri = myData.imageUri.replace('http://localhost:5000', mobileURI);
+            setImageUri(fixedImageUri);
+        }
 
         setIsLoading(false);
     }, [])
@@ -94,9 +97,13 @@ const MyProfileScreen = ({navigation, route}) => {
                 :
                     <ScrollView style={styles.mainContainer}>
                         <View style={styles.avatarContainer}>
-                            <Avatar style={{ height: "100%", width: "100%" }} source={{uri: imageUri + '?' + new Date(), cache: 'reload'}}></Avatar>
+                            {imageUri
+                                ?
+                                <Avatar style={{ height: "100%", width: "100%" }} source={{uri: imageUri + '?' + new Date(), cache: 'reload'}}></Avatar>
+                                :
+                                <Avatar icon={{type:'font-awesome', name: 'user', color: 'black'}} size="large"></Avatar>
+                            }
                         </View>
-                        
                         <View style={styles.infoContainer}>
                             <View style={styles.oneProperty}>
                                 <Text style={styles.propertiesName}>Name:</Text>
@@ -200,7 +207,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
-        minHeight: 175
+        minHeight: 175,
+        backgroundColor: '#F3F3F3'
     },
 
     infoContainer: {
