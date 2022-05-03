@@ -13,7 +13,7 @@ export function executeGetMessages(setChatMessages, myId, myName, id, name) {
 }
 
 export function getDirectMessages(setChatMessages, chatRoom, myId, myName, id, name) {
-    console.log(myId, ' : ', myName, ' : ', id, ' : ', name,);
+    // console.log(myId, ' : ', myName, ' : ', id, ' : ', name,);
 
     $api.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, myName: myName, id: id, name: name}})
     .then((response) => {

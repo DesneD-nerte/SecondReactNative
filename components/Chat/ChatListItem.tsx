@@ -60,10 +60,15 @@ const ChatListItem = (props: ChatListItemProps) => {
 
 				<View style={styles.rightContainer}>
 					<Text>{dateLastMessage}</Text>
-					{/* <Text>{chatRoom.lastMessage.createdAt}</Text> */}
-					<View style={styles.countContainer}>
-						<Text style={{color: 'white'}}>{'1'}</Text>
-					</View>
+					{
+						chatRoom.countBadge !== 0 
+						?
+						<View style={styles.countContainer}>
+							<Text style={{color: 'white'}}>{chatRoom.countBadge}</Text>
+						</View>
+						:
+						<View style={styles.emptyContainer}></View>
+					}
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -113,12 +118,19 @@ const styles = StyleSheet.create({
 		paddingLeft: 15
 	}, 
 
+	emptyContainer: {
+		alignSelf: 'center',
+		alignItems:'center',
+		width: 40,
+		height: 20
+	},
+
 	countContainer: {
 		alignSelf: 'center',
 		alignItems:'center',
+		width: 40,
+		height: 20,
 		backgroundColor:'#0086EA',
 		borderRadius: 10,
-		width: 40,
-		height: 20
 	}
 })

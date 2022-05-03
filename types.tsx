@@ -18,12 +18,14 @@ export type Message = {
     content: String;
     createdAt: Date;/////Number
     user: User;
+    isVisible: Boolean;/////////!!!!!!
 }
 
 export type ChatRoom = {
     _id?: String;
     users: User[];
     lastMessage: Message;
+    countBadge: number;//!!!!!!
 }
 
 export type ChatType = {

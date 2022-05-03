@@ -35,7 +35,8 @@ function InputBox({ socket, setChatMessages, setChatLastMessages, params }) {
 		const message: Message = {
 			content: fixedMessage,
 			createdAt: new Date(),
-			user: user
+			user: user,
+			isVisible: false
 		}
 
 		const receiverId = params.id;

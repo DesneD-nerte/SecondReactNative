@@ -8,7 +8,7 @@ import Background from '../assets/WhiteBackground.jpg';
 import DateMessage from '../services/DateMessage';
 import $api from '../http'
 import Chats from '../data/Chats'
-import { ChatType } from '../types';
+import { ChatType, Message } from '../types';
 import { useChat } from '../hooks/useChat'
 import { executeGetMessages, getDirectMessages } from '../services/Messages'
 import { useDispatch } from 'react-redux'
@@ -37,6 +37,15 @@ function ChatRoomScreen({route}) {
 
 		// executeGetMessages(setChatMessages, myId, myName, id, name);
 		getDirectMessages(setChatMessages, chatRoom, myId, myName, id, name);
+
+		return(() => {
+			$api.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, myName: myName, id: id, name: name}})
+			.then((response) => {
+				$api.put(`${mobileURI}/messages/updateVisibleAllMessages`, {chatMessages: response.data, id});
+				console.log(response);
+				console.log('exit');
+			})
+		})
 	}, [])
 
 	useEffect(() => {
@@ -46,6 +55,29 @@ function ChatRoomScreen({route}) {
 			}
 		}, 150);
 	}, [chatMessages])
+
+
+	const viewabilityConfig = {
+		waitForInteraction: false,
+		// At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
+		viewAreaCoveragePercentThreshold: 20,
+		// itemVisiblePercentThreshold: 100
+	}
+	
+	const onViewableItemsChanged = ({viewableItems, changed}) => {
+		//console.log("Visible items are", viewableItems);
+		//console.log("Changed in this iteration", changed);
+		// const changedMessages = viewableItems ;
+		// console.log(changed);
+		// if(oneMessage.isVisible === false) {
+		// 	$api.put(`${mobileURI}/messages/updateVisibleMessage`, {chatMessages, oneMessage});
+		// }
+		// if(chatRoom) {
+		// 	const {id} = chatRoom;
+		// 	$api.put(`${mobileURI}/messages/updateVisibleAllMessages`, {chatMessages, id}); 
+		// }
+	};
+	const viewabilityConfigCallbackPairs = useRef([{ viewabilityConfig, onViewableItemsChanged }])
 
 	return (
 		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
@@ -60,13 +92,10 @@ function ChatRoomScreen({route}) {
 						<FlatList extraData={chatMessages}
 							// inverted
 							data={[...chatMessages.messages]}
-							// contentContainerStyle={{ flexDirection: 'column-reverse' }}
+							// viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
 							renderItem={({ item, index }) => {
 								currentDate = new Date(item.createdAt);
-								// if(index === 0) previousDate = currentDate; 
 								if(DateMessage.CheckDateMessage(currentDate, previousDate)) {
-									// console.log('main if', item.content);
-									// console.log('currentData:', currentDate, 'previousData', previousDate);
 									previousDate = currentDate;
 									const jsxToReturn =
 										<View>
@@ -75,13 +104,8 @@ function ChatRoomScreen({route}) {
 											</View>
 											<ChatMessage message={item}></ChatMessage>
 										</View>
-									// previousDate = currentDate;
 									return jsxToReturn;
 								}
-								// else {
-								// 	console.log('else', item.content);
-								// 	console.log('currentData:', currentDate, 'previousData', previousDate);
-								// }
 								return <ChatMessage message={item}></ChatMessage>
 							}}
 							keyExtractor={(item, index) => index.toString()}

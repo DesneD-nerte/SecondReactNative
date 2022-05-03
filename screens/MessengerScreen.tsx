@@ -23,11 +23,10 @@ const MessengerScreen = ({navigation}) => {
 
 	const myData = useSelector((state) => ({...state.profileData}));
 
-	const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);//Array не было
+	const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);
 	const [showingChatLastMessages, setShowingChatLastMessages] = useState<Array<ChatRoom>>();
-	//const [myId, setMyId] = useState('');
+
 	const [socket, setSocket] = useState(null);
-	//const [socket, setSocket] = useState(io(`${mobileURI}`).emit('logged-in', me._id));
 
 	const [isVisibleSearchInput, setIsVisibleSearchInput] = useState(false);
 	const [searchedUser, setSearcherUser] = useState('');
@@ -121,6 +120,7 @@ const MessengerScreen = ({navigation}) => {
 			});
 		}
 	  }, [isVisibleSearchInput]);
+
 
 	return (
 		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
