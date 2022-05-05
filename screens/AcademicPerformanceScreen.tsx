@@ -110,11 +110,8 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
                 }
             </Picker>
             {
-                currentMarks !== undefined && currentMarks.length !== 0
-                ? 
-                    <JournalDataGrid currentMarks={currentMarks} selectedDate={selectedDate}></JournalDataGrid>
-                :
-                null
+                currentMarks !== undefined && currentMarks.length !== 0 &&
+                    <JournalDataGrid currentMarks={currentMarks} selectedDate={selectedDate}/>
             }
         </View>
     )

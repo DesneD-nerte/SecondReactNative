@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
@@ -38,7 +38,7 @@ LocaleConfig.defaultLocale = 'ru';
 
 const dayNamesShort = ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'Вс.'];
 
-const ScheduleScreen = () => {
+const ScheduleScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(true);
 
     const [items, setItems] = useState(
@@ -51,21 +51,28 @@ const ScheduleScreen = () => {
         // }
         {}
     );
-
-    const imageUrl = 'https://cdn.pixabay.com/photo/2020/09/18/05/58/lights-5580916__340.jpg';
+    
+    const navigateToJournal = (item) => {
+        navigation.navigate('Performance');
+    }
 
     const renderItem = (item) => {
         return (
-            <TouchableOpacity style={styles.container} onPress={e => alert('pressed item')}>
+            <TouchableOpacity style={styles.container} onPress={(e) => navigateToJournal(item)}>
                 <View style={styles.mainContainer} >
                     <View style={styles.itemContainer}>
                         <Text>{item.time}</Text>
                         <Text>{item.title}</Text>
-                        <Text>453</Text>
+                        <Text>{item.classroom}</Text>
                     </View>
                     <View style={styles.itemContainer}>
-                        <Avatar size={30} rounded source={{uri: imageUrl}}></Avatar>
-                        <Text>Петров С.М.</Text>
+                        {item.teacher.imageUri 
+                            ?
+                                <Avatar size={30} rounded source={{uri: item.teacher.imageUri}}></Avatar>
+                            :
+                                <Avatar size={30} rounded icon={{type:'font-awesome', name: 'user', color: 'black'}}  overlayContainerStyle={{backgroundColor: '#DBDBDB'}}></Avatar>
+                        }
+                        <Text>{item.teacher.name}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -91,9 +98,35 @@ const ScheduleScreen = () => {
                         + ':' + 
                         ('0'+(date.getMinutes())).slice(-2)
 
-                    newItems[dateForItem] = [{title: oneCurrentLesson.name.name, time: beginTime}];
+                    const fixedImageUri = undefined;
+                    if(oneCurrentLesson.teacher.imageUri !== undefined) {
+                        fixedImageUri = oneCurrentLesson.teacher.imageUri.replace('http://localhost:5000', mobileURI);
+                    }
+
+                    const arrayName = oneCurrentLesson.teacher.name.split(' ');
+                    let splittedName = '';
+                    for(let i = 0; i < arrayName.length; i++) {
+                        if(i === 0) {
+                            splittedName += arrayName[i] + ' ';
+                        } else {
+                            splittedName += arrayName[i].slice(0, 1) + '.'
+                        }
+                    }
+                    
+                    const newLesson = {
+                        title: oneCurrentLesson.name.name,
+                        time: beginTime,
+                        classroom: oneCurrentLesson.classroom.name,
+                        teacher: {...oneCurrentLesson.teacher, imageUri: fixedImageUri, name: splittedName}
+                    };
+
+                    if(newItems[dateForItem]) {
+                        newItems[dateForItem].push(newLesson);
+                    } else {
+                        newItems[dateForItem] = [newLesson];
+                    }
                 }
-                
+
                 setItems(newItems);
                 onRefresh(false);
             })
@@ -179,7 +212,7 @@ const ScheduleScreen = () => {
             //     '2012-05-18': {disabled: true}
             // }}
             // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
-            onRefresh={onRefresh}
+            onRefresh={() => onRefresh(true)}
             // Set this true while waiting for new data from a refresh
             refreshing={refreshing}
             // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView
@@ -238,6 +271,3 @@ const styles = StyleSheet.create({
         marginLeft: 5
     }
 })
-
-//module.exports = HomeScreen;
-//export default HomeScreen;

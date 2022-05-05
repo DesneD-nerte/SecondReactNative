@@ -18,7 +18,7 @@ function InputBox({ socket, setChatMessages, setChatLastMessages, params }) {
 			console.log('updateMessage INPUTBOX');
 
 			const {myId, myName, id, name} = params;
-			executeGetMessages(setChatMessages, myId, myName, id, name);
+			executeGetMessages(setChatMessages, myId, id);
 		})
 	}, [])
 
