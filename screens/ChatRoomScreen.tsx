@@ -75,17 +75,6 @@ function ChatRoomScreen({route}) {
 	}
 	
 	const onViewableItemsChanged = ({viewableItems, changed}) => {
-		//console.log("Visible items are", viewableItems);
-		//console.log("Changed in this iteration", changed);
-		// const changedMessages = viewableItems ;
-		// console.log(changed);
-		// if(oneMessage.isVisible === false) {
-		// 	$api.put(`${mobileURI}/messages/updateVisibleMessage`, {chatMessages, oneMessage});
-		// }
-		// if(chatRoom) {
-		// 	const {id} = chatRoom;
-		// 	$api.put(`${mobileURI}/messages/updateVisibleAllMessages`, {chatMessages, id}); 
-		// }
 		let isMounted = true;
 		const items = viewableItems;
 

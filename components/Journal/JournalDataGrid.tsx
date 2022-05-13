@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
-import { Button, FlatList, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
-import { LocaleConfig, Agenda } from 'react-native-calendars';
-import { Avatar, Divider, Input } from "react-native-elements";
-import { color } from "react-native-elements/dist/helpers";
-import moment from 'moment';
+import { ScrollView, TextInput } from "react-native";
+import { StyleSheet, View, Text } from 'react-native';
+import { Avatar } from "react-native-elements";
 import { Marks } from "../../types";
 
 type currentMarksProps = {
@@ -18,44 +13,36 @@ function JournalDataGrid(props: currentMarksProps) {
 	const {currentMarks, selectedDate} = props;
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			{
 				currentMarks.map(oneMark => {
 					const selectedDateLessons = oneMark.allCurrentLessons.find(oneCurrentLesson => {
-						// console.log(selectedDate);
 						return oneCurrentLesson.currentLesson.beginDate === selectedDate
 					})
-					console.log(selectedDateLessons);
 					return (
-						 <View style={styles.oneMark}>
+						<View style={styles.oneMark} key={oneMark._id.toString()}>
 							<View style={styles.leftPosition}>
-								<Text numberOfLines={1}>
+								{oneMark.user.imageUri 
+								?
+									<Avatar size={30} rounded source={{uri: oneMark.user.imageUri.toString()}}></Avatar>
+								:
+									<Avatar size={30} rounded icon={{type:'font-awesome', name: 'user', color: '#5387E7'}}  overlayContainerStyle={{backgroundColor: '#DBDBDB'}}></Avatar>
+								}
+								<Text style={styles.textName} numberOfLines={1}>
 									{oneMark.user.name}
 								</Text>
 							</View>
 							<View style={styles.rightPosition}>
-								<TextInput placeholder={selectedDateLessons?.mark.toString()} style={styles.inputRightPosition} maxLength={8}>
-
+								<TextInput placeholder={selectedDateLessons?.mark.toString()}
+									style={styles.inputRightPosition} 
+									maxLength={8}>
 								</TextInput>
 							</View>
 						</View> 
 					)
 				})
 			}
-			{/* <View style={styles.oneMark}>
-				<View style={styles.leftPosition}>
-					<Text numberOfLines={1}>
-						{currentMarks[0].user.name}
-					</Text>
-				</View>
-				<View style={styles.rightPosition}>
-					<TextInput placeholder="123" style={styles.inputRightPosition} maxLength={8}>
-
-					</TextInput>
-				</View>
-			</View> */}
-			
-		</View>
+		</ScrollView>
 	)
 }
 
@@ -74,8 +61,9 @@ const styles = StyleSheet.create({
 	},
 	leftPosition: {
 		display: "flex",
-		// alignItems: 'center',
-		justifyContent: 'center',
+		alignItems: 'center',
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
 		padding: 15,
 		borderWidth: 1,
 		borderBottomWidth: 0.5,
@@ -83,6 +71,13 @@ const styles = StyleSheet.create({
 		borderColor: '#CFCFCF',
 		flex: 0.8
 	},
+
+	textName: {
+		flex: 1,
+		marginLeft: 10,
+		flexWrap: 'wrap'
+	},
+
 	rightPosition: {
 		display: "flex",
 		// alignItems: 'center',

@@ -1,12 +1,12 @@
-import { createRef, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TextInput, View, Image, ImageBackground, KeyboardAvoidingView, ScrollView, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ImageBackground, ScrollView, Text, Dimensions} from 'react-native';
 import { Input } from "react-native-elements/dist/input/Input";
 import { Button } from "react-native-elements";
 import { TokenContext } from "../context/tokenContext";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { changeProfileData } from "../store/profileDataReducer";
 import { mobileURI } from "../config/config";
 import { Icon } from 'react-native-elements'
@@ -21,6 +21,11 @@ const LoginScreen = () => {
 
     const {isAuth, setIsAuth} = useContext(TokenContext);
     const [isErrorLogin, setIsErrorLogin] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handlePasswordChangeClick = () => {
+        setShowPassword(!showPassword);
+    }
 
     const loginEnter = () => {
         axios.post(`${mobileURI}/api/auth/login`, {username: username, password: password})
@@ -43,7 +48,7 @@ const LoginScreen = () => {
     return(
         <View>
             <ScrollView keyboardShouldPersistTaps={'handled'} contentContainerStyle={styles.scrollViewContentContainer} style={styles.scrollViewItem}>
-                <View style={{flex: 0.5, alignItems: 'center', justifyContent: 'center'}}>
+                <View style={styles.loginHeader}>
                     <Icon
                         name='user'
                         type='antdesign'
@@ -67,13 +72,14 @@ const LoginScreen = () => {
                         </Input>
                         <Input
                             placeholder='password'
-                            secureTextEntry={true} 
+                            secureTextEntry={showPassword === false ? true : false} 
                             value={password}
                             onChangeText={password => setPassword(password)}
                             onSubmitEditing={loginEnter}
                             errorMessage={isErrorLogin === true && "Некорректный ввод логина или пароля"}
                             errorStyle={{color: 'red'}}
-                            leftIcon={{ type: 'evilcons', name: 'lock', size: 20, color: "gray"  }}>
+                            leftIcon={{ type: 'evilcons', name: 'lock', size: 20, color: "gray" }}
+                            rightIcon={{ type: 'ionicon', name: showPassword === false ? 'eye' : 'eye-off', size: 25, color: "gray", onPress: handlePasswordChangeClick }}>
                         </Input>
                         <Button title={"Log In"} containerStyle={styles.buttonContainer} onPress={loginEnter}></Button>
                     </View>
@@ -88,10 +94,15 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
     scrollViewContentContainer: {
-        height: '100%'
+        height: 500
     },
     scrollViewItem: {
         backgroundColor: '#00000000'
+    },
+    loginHeader: {
+        flex: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     mainContainer: {
         flex: 1,

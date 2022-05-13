@@ -19,7 +19,8 @@ const MainNavigation = () => {
                 // headerShown: true,
                 headerRight: () => (
                 <Button  
-                    title={"Settings"}
+                    name={"Settings"}
+                    title={"Настройки"}
                     type="clear"
                     onPress={() => {
                         navigation.navigate('Settings');
@@ -34,7 +35,8 @@ const MainNavigation = () => {
                 options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name='home' color={color} size={size} />
-                            )
+                            ),
+                            title: "Расписание"
                         }}>
             </Tab.Screen>
             <Tab.Screen
@@ -43,7 +45,8 @@ const MainNavigation = () => {
                 options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name="newspaper" color={color} size={size} />
-                            )
+                            ),
+                            title: "Новости"
                         }}>
             </Tab.Screen>
             <Tab.Screen
@@ -53,6 +56,7 @@ const MainNavigation = () => {
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name="message-reply-text" color={color} size={size} />
                             ),
+                            title: "Мессенджер"
                         })}>
             </Tab.Screen>
             <Tab.Screen
@@ -61,7 +65,8 @@ const MainNavigation = () => {
                 options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons name="notebook" color={color} size={size} />
-                            )
+                            ),
+                            title: "Журнал"
                         }}>
             </Tab.Screen>
         </Tab.Navigator>

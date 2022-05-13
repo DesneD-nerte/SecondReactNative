@@ -10,6 +10,7 @@ import $api from "../http";
 import { mobileURI } from "../config/config";
 import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
 import moment from 'moment';
+import Data from '../data/AgendaData';
 
 moment.locale('ru');
 
@@ -49,7 +50,7 @@ const ScheduleScreen = ({ navigation, route }) => {
         // '2022-01-27': [],
         // '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}],
         // }
-        {}
+        Data
     );
     
     const navigateToJournal = (item) => {
@@ -61,8 +62,8 @@ const ScheduleScreen = ({ navigation, route }) => {
             <TouchableOpacity style={styles.container} onPress={(e) => navigateToJournal(item)}>
                 <View style={styles.mainContainer} >
                     <View style={styles.itemContainer}>
-                        <Text>{item.time}</Text>
-                        <Text>{item.title}</Text>
+                        <Text style={{fontWeight: "bold"}}>{item.title}</Text>
+                        <Text>{item.beginTime} - {item.endTime}</Text>
                         <Text>{item.classroom}</Text>
                     </View>
                     <View style={styles.itemContainer}>
@@ -70,7 +71,7 @@ const ScheduleScreen = ({ navigation, route }) => {
                             ?
                                 <Avatar size={30} rounded source={{uri: item.teacher.imageUri}}></Avatar>
                             :
-                                <Avatar size={30} rounded icon={{type:'font-awesome', name: 'user', color: 'black'}}  overlayContainerStyle={{backgroundColor: '#DBDBDB'}}></Avatar>
+                                <Avatar size={30} rounded icon={{type:'font-awesome', name: 'user', color: '#5387E7'}}  overlayContainerStyle={{backgroundColor: '#DBDBDB'}}></Avatar>
                         }
                         <Text>{item.teacher.name}</Text>
                     </View>
@@ -86,24 +87,30 @@ const ScheduleScreen = ({ navigation, route }) => {
                 const currentLessons = response.data;
                 sortCurrentLessonsByDate(currentLessons);
 
-                const newItems = {};
+                // const newItems = {};
+                const newItems = JSON.parse(JSON.stringify(Data));
                 for (const oneCurrentLesson of currentLessons) {
-                    const date = new Date(oneCurrentLesson.beginDate);
-                    const dateForItem = date.getFullYear()
+                    const beginDate = new Date(oneCurrentLesson.beginDate);
+                    const endDate = new Date(oneCurrentLesson.endDate);
+                    const dateForItem = beginDate.getFullYear()
                         + '-' +
-                        ('0'+(date.getMonth()+1)).slice(-2)
+                        ('0'+(beginDate.getMonth()+1)).slice(-2)
                         + '-' +
-                        ('0'+(date.getDate())).slice(-2);
-                    const beginTime = ('0'+(date.getHours())).slice(-2) 
+                        ('0'+(beginDate.getDate())).slice(-2);
+                    const beginTime = ('0'+(beginDate.getHours())).slice(-2) 
                         + ':' + 
-                        ('0'+(date.getMinutes())).slice(-2)
+                        ('0'+(beginDate.getMinutes())).slice(-2);
+                    
+                    const endTime = ('0'+(endDate.getHours())).slice(-2) 
+                        + ':' + 
+                        ('0'+(endDate.getMinutes())).slice(-2)
 
                     const fixedImageUri = undefined;
-                    if(oneCurrentLesson.teacher.imageUri !== undefined) {
-                        fixedImageUri = oneCurrentLesson.teacher.imageUri.replace('http://localhost:5000', mobileURI);
+                    if(oneCurrentLesson.teachers[0].imageUri !== undefined) {
+                        fixedImageUri = oneCurrentLesson.teachers[0].imageUri.replace('http://localhost:5000', mobileURI);
                     }
 
-                    const arrayName = oneCurrentLesson.teacher.name.split(' ');
+                    const arrayName = oneCurrentLesson.teachers[0].name.split(' ');
                     let splittedName = '';
                     for(let i = 0; i < arrayName.length; i++) {
                         if(i === 0) {
@@ -115,18 +122,17 @@ const ScheduleScreen = ({ navigation, route }) => {
                     
                     const newLesson = {
                         title: oneCurrentLesson.name.name,
-                        time: beginTime,
+                        beginTime: beginTime,
+                        endTime: endTime,
                         classroom: oneCurrentLesson.classroom.name,
-                        teacher: {...oneCurrentLesson.teacher, imageUri: fixedImageUri, name: splittedName}
+                        teacher: {...oneCurrentLesson.teachers[0], imageUri: fixedImageUri, name: splittedName}
                     };
-
                     if(newItems[dateForItem]) {
                         newItems[dateForItem].push(newLesson);
                     } else {
                         newItems[dateForItem] = [newLesson];
                     }
                 }
-
                 setItems(newItems);
                 onRefresh(false);
             })
@@ -197,24 +203,17 @@ const ScheduleScreen = ({ navigation, route }) => {
                             <ActivityIndicator size="large"></ActivityIndicator>
                         </View>
             }}
-            // Specify your item comparison function for increased performance
-            rowHasChanged={(r1, r2) => {
-                return r1.text !== r2.text;
-            }}
             // Hide knob button. Default = false
             hideKnob={false}
             // When `true` and `hideKnob` prop is `false`, the knob will always be visible and the user will be able to drag the knob up and close the calendar. Default = false
             showClosingKnob={true}
-            // By default, agenda dates are marked if they have at least one item, but you can override this if needed
-            // markedDates={{
-            //     '2012-05-16': {selected: true, marked: true},
-            //     '2012-05-17': {marked: true},
-            //     '2012-05-18': {disabled: true}
-            // }}
-            // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly
             onRefresh={() => onRefresh(true)}
-            // Set this true while waiting for new data from a refresh
             refreshing={refreshing}
+            futureScrollRange={50}
+            pastScrollRange={50}
+            rowHasChanged={(r1, r2) => {
+                return r1.text !== r2.text;
+            }}
             // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView
             refreshControl={null}
             // Agenda theme
@@ -253,6 +252,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         backgroundColor: 'white',
         flexDirection: 'row',
+        height: 75,
         // margin: 5,
         padding: 5,
         alignItems: 'center',
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
 
     emptyDateContainer: {
         display: 'flex',
-        flex: 1, 
+        flex: 1.5, 
         justifyContent:'center',
         marginLeft: 5
     }
