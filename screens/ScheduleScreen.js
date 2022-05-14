@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { Button, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
-import mainLogo from '../assets/favicon.png';
 import { LocaleConfig, Agenda } from 'react-native-calendars';
 import { Avatar, Divider, Input } from "react-native-elements";
-import { color } from "react-native-elements/dist/helpers";
-import $api from "../http";
 import { mobileURI } from "../config/config";
 import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
 import moment from 'moment';
 import Data from '../data/AgendaData';
+import axios from "axios";
 
 moment.locale('ru');
 
@@ -82,7 +80,7 @@ const ScheduleScreen = ({ navigation, route }) => {
 
 	useEffect(() => {
         if(refreshing === true) {
-            $api.get(`${mobileURI}/api/currentlessons`)
+            axios.get(`${mobileURI}/api/currentlessons`)
             .then(response => {
                 const currentLessons = response.data;
                 sortCurrentLessonsByDate(currentLessons);

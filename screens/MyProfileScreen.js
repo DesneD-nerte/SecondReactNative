@@ -1,16 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, Platform, PermissionsAndroid, ScrollView } from "react-native";
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
 import { Avatar, Button, Icon } from "react-native-elements";
-import axios from "axios";
-import $api from '../http/index';
-import { TokenContext } from "../context/tokenContext";
+// import { TokenContext } from "../context/tokenContext";
+import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { mobileURI } from "../config/config";
 import { useDispatch, useSelector } from "react-redux";
-import IconUser from '../assets/iconUser.png';
 
 const MyProfileScreen = ({navigation, route}) => {
 
@@ -20,10 +16,11 @@ const MyProfileScreen = ({navigation, route}) => {
     const [login, setLogin] = useState('');
     const [roles, setRoles] = useState([]);
     const [imageUri, setImageUri] = useState('');
-    const {isAuth, setIsAuth} = useContext(TokenContext);
+    // const {isAuth, setIsAuth} = useContext(TokenContext);
 
 	const myData = useSelector((state) => ({...state.profileData}));
 
+    const { signOut } = useContext(AuthContext);
     // useEffect(() => {
     //     $api.get(`${mobileURI}/myprofile`)
     //     .then(response => {
@@ -47,9 +44,10 @@ const MyProfileScreen = ({navigation, route}) => {
         setIsLoading(false);
     }, [])
 
-    const logOut = (event) => {   
-        AsyncStorage.clear();
-        setIsAuth(false);
+    const logOut = async (event) => {   
+        // AsyncStorage.clear();
+        // setIsAuth(false);
+        signOut();
     };
 
     const changeImage = async () => {

@@ -1,11 +1,11 @@
 import React, {useEffect, useContext, useState} from "react";
 import { StyleSheet, View, Text, FlatList, ImageBackground, RefreshControl } from "react-native"
 import moment from 'moment';
-import $api from "../http";
 import { News } from "../types";
 import { Card } from "react-native-elements";
 import { mobileURI } from "../config/config";
 import Background from '../assets/BlackBackground.jpg';
+import axios from "axios";
 
 
 const NewsScreen = ({ navigation, route }) => {
@@ -15,7 +15,7 @@ const NewsScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         if(refreshing === true) { 
-            $api.get(`${mobileURI}/news/getnews`)
+            axios.get(`${mobileURI}/news/getnews`)
             .then(response => {
                 setNews(response.data);
                 onRefresh(false);

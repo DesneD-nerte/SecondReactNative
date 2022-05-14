@@ -3,17 +3,12 @@ import { View, FlatList, StyleSheet, ImageBackground, Button } from 'react-nativ
 import { Text } from 'react-native-elements'
 import ChatMessage from '../components/Chat/ChatMessage'
 import InputBox from '../components/Chat/InputBox'
-import chatsRoomData from '../data/Chats'
 import Background from '../assets/WhiteBackground.jpg';
 import DateMessage from '../services/DateMessage';
-import $api from '../http'
-import Chats from '../data/Chats'
-import { ChatType, Message } from '../types';
-import { useChat } from '../hooks/useChat'
-import { executeGetMessages, getDirectMessages } from '../services/Messages'
-import { useDispatch } from 'react-redux'
-import { changeLastMessages } from '../store/messagesRecucer'
+import { ChatType } from '../types';
+import { getDirectMessages } from '../services/Messages'
 import { mobileURI } from '../config/config'
+import axios from 'axios'
 
 var _ = require('lodash');
 
@@ -43,9 +38,9 @@ function ChatRoomScreen({route}) {
 		getDirectMessages(setChatMessages, chatRoom, myId, id, countSkipMessages.current);
 
 		return(() => {
-			$api.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, id: id, skip: 0}})
+			axios.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, id: id, skip: 0}})
 			.then((response) => {
-				$api.put(`${mobileURI}/messages/updateVisibleAllMessages`, {chatMessages: response.data, id, myId});
+				axios.put(`${mobileURI}/messages/updateVisibleAllMessages`, {chatMessages: response.data, id, myId});
 			})
 		})
 	}, [])
@@ -56,7 +51,7 @@ function ChatRoomScreen({route}) {
 			const {myId, id} = route.params;
 			countSkipMessages.current += 20;
 
-			$api.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, id: id, skip: countSkipMessages.current}})
+			axios.get(`${mobileURI}/messages/getChatRoomMessages`, {params: { myId: myId, id: id, skip: countSkipMessages.current}})
 			.then((response) => {
 				setNewChatMessages(response.data);
 				setDataIsReady(true);

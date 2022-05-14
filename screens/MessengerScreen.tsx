@@ -4,13 +4,10 @@ import { io } from 'socket.io-client';
 import { Button, Icon } from 'react-native-elements';
 import Background from '../assets/WhiteBackground.jpg';
 import ChatListItem from '../components/Chat/ChatListItem';
-import ChatRooms from '../data/ChatRooms';
-import $api from '../http';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChatRoom } from '../types';
 import { useSelector } from 'react-redux';
 import { mobileURI } from '../config/config';
+import axios from 'axios';
 
 type MyJwt = {
 	id: string,
@@ -34,7 +31,7 @@ const MessengerScreen = ({navigation}) => {
 	useEffect(() => {
 		setSocket(io(`${mobileURI}`).emit('logged-in', myData._id));
 
-		$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
+		axios.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
 			.then((response) => {
 				setChatLastMessages(response.data);
 				setShowingChatLastMessages(response.data);
@@ -47,7 +44,7 @@ const MessengerScreen = ({navigation}) => {
 		socket?.on('updateMessages', () => {
 			console.log('updateMessage client');
 	
-			$api.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
+			axios.get(`${mobileURI}/messages/getLastMessages`, {params: { myId: myData._id }})
 				.then((response) => {
 					setChatLastMessages(response.data);
 					setShowingChatLastMessages(response.data);
@@ -90,6 +87,7 @@ const MessengerScreen = ({navigation}) => {
 	useLayoutEffect(() => {
 		if(isVisibleSearchInput) {
 			navigation.setOptions({
+				headerTitle: '',
 				headerRight: () => (
 					<View style={{ flexDirection: 'row', width: '100%', flex: 1, justifyContent: 'space-between', alignItems: 'center'}}>
 						<TextInput autoFocus={true} onChangeText={text => setSearcherUser(text) } placeholder="Поиск" style={{fontSize: 16, flex: 1}}></TextInput>
@@ -106,6 +104,7 @@ const MessengerScreen = ({navigation}) => {
 			});
 		} else {
 			navigation.setOptions({
+				headerTitle: 'Мессенджер',
 				headerRight: () => (
 					<View style={{ flexDirection: 'row', width: '100%', flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
 						<Button  

@@ -3,11 +3,9 @@ import { View, Text } from "react-native"
 import {Picker} from '@react-native-picker/picker';
 import { CurrentLesson, Group, Lesson, Marks } from "../types";
 import axios from "axios";
-import $api from "../http";
 import { mobileURI } from "../config/config";
 import moment from "moment";
 import JournalDataGrid from "../components/Journal/JournalDataGrid";
-import { Divider } from "react-native-elements";
 
 type informationType = {
     groups: Array<Group>,
@@ -30,10 +28,10 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
     });
 
     useEffect(() => {
-        const requestGroups = $api.get(`${mobileURI}/api/groups`);
-        const requestLessons = $api.get(`${mobileURI}/api/lessons`);
-        const requestCurrentLessons = $api.get(`${mobileURI}/api/currentlessons`)
-        const requestMarks = $api.get(`${mobileURI}/api/marks`)
+        const requestGroups = axios.get(`${mobileURI}/api/groups`);
+        const requestLessons = axios.get(`${mobileURI}/api/lessons`);
+        const requestCurrentLessons = axios.get(`${mobileURI}/api/currentlessons`)
+        const requestMarks = axios.get(`${mobileURI}/api/marks`)
 
         axios.all([requestGroups, requestLessons, requestCurrentLessons, requestMarks])
         .then(axios.spread((...response) => {

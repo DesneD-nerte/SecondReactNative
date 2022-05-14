@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { View, Text, FlatList, TextInput, StyleSheet } from 'react-native'
 import { Button, Icon } from 'react-native-elements';
@@ -5,7 +6,6 @@ import { useSelector } from 'react-redux';
 import UsersMessangerItem from '../components/Chat/UsersMessangerItem'
 import { mobileURI } from '../config/config';
 // import ChatRooms from '../data/ChatRooms';
-import $api from '../http';
 import { ChatType, User } from '../types';
 
 export const UsersMessengerScreen = ({navigation, route}) => {
@@ -18,7 +18,7 @@ export const UsersMessengerScreen = ({navigation, route}) => {
 	const [searchedUser, setSearcherUser] = useState('');
 
 	useEffect(() => {
-		$api.get(`${mobileURI}/api/users/all`, {params: {_id: myData._id}})
+		axios.get(`${mobileURI}/api/users/all`, {params: {_id: myData._id}})
 		.then((response) => {
 			setListUsers(response.data);
 			setShowingListUsers(response.data);
