@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { View, Text, FlatList, TextInput, StyleSheet } from 'react-native'
 import { Button, Icon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import UsersMessangerItem from '../components/Chat/UsersMessangerItem'
 import { mobileURI } from '../config/config';
@@ -30,14 +31,16 @@ export const UsersMessengerScreen = ({navigation, route}) => {
 		navigation.setOptions({
 			title: 'Contacts',
 			header: () => (
-				<View style={styles.mainHeader}>
-					<View style={styles.iconContainer}>
-						<Icon type='antdesign' name='arrowleft' color={'#000000'} onPress={navigation.goBack}></Icon>
+				<SafeAreaView >
+					<View style={styles.mainHeader}>
+						<View style={styles.iconContainer}>
+							<Icon type='antdesign' name='arrowleft' color={'#000000'} onPress={navigation.goBack}></Icon>
+						</View>
+						<View style={styles.inputContainer}>
+							<TextInput autoFocus={true} onChangeText={text => setSearcherUser(text) } placeholder="Поиск" style={{fontSize: 16, flex: 1, marginRight: 10}}></TextInput>
+						</View>
 					</View>
-					<View style={styles.inputContainer}>
-						<TextInput autoFocus={true} onChangeText={text => setSearcherUser(text) } placeholder="Поиск" style={{fontSize: 16, flex: 1, marginRight: 10}}></TextInput>
-					</View>
-				</View>
+				</SafeAreaView>
 			)
 		});
 	  }, [navigation]);
@@ -72,6 +75,7 @@ export const UsersMessengerScreen = ({navigation, route}) => {
 const styles = StyleSheet.create({
 	mainHeader: {
 		display: 'flex',
+		// marginTop: 20,
 		flexDirection: 'row',
 		alignItems: 'center',
 		height: 55,
