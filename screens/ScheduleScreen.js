@@ -50,14 +50,10 @@ const ScheduleScreen = ({ navigation, route }) => {
         // }
         Data
     );
-    
-    const navigateToJournal = (item) => {
-        navigation.navigate('Performance');
-    }
 
     const renderItem = (item) => {
         return (
-            <TouchableOpacity style={styles.container} onPress={(e) => navigateToJournal(item)}>
+            <TouchableOpacity style={styles.container}>
                 <View style={styles.mainContainer} >
                     <View style={styles.itemContainer}>
                         <Text style={{fontWeight: "bold"}}>{item.title}</Text>
@@ -80,7 +76,7 @@ const ScheduleScreen = ({ navigation, route }) => {
 
 	useEffect(() => {
         if(refreshing === true) {
-            axios.get(`${mobileURI}/api/currentlessons`)
+            axios.get(`${mobileURI}/currentlessons`)
             .then(response => {
                 const currentLessons = response.data;
                 sortCurrentLessonsByDate(currentLessons);

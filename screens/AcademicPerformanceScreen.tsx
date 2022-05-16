@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 import { View, Text } from "react-native"
 import {Picker} from '@react-native-picker/picker';
 import { CurrentLesson, Group, Lesson, Marks } from "../types";
@@ -15,8 +15,9 @@ type informationType = {
 }
 
 const AcademicPerformanceScreen = ({ navigation, route }) => {
-    const [selectedLesson, setSelectedLesson] = useState();
-    const [selectedGroup, setSelectedGroup] = useState();
+
+    const [selectedLesson, setSelectedLesson] = useState<Lesson>();
+    const [selectedGroup, setSelectedGroup] = useState<Group>();
     const [currentMarks, setCurrentMarks] = useState<Array<Marks>>();
     const [selectedDate, setSelectedDate] = useState();
 
@@ -30,8 +31,8 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
     useEffect(() => {
         const requestGroups = axios.get(`${mobileURI}/api/groups`);
         const requestLessons = axios.get(`${mobileURI}/api/lessons`);
-        const requestCurrentLessons = axios.get(`${mobileURI}/api/currentlessons`)
-        const requestMarks = axios.get(`${mobileURI}/api/marks`)
+        const requestCurrentLessons = axios.get(`${mobileURI}/currentlessons`)
+        const requestMarks = axios.get(`${mobileURI}/marks`)
 
         axios.all([requestGroups, requestLessons, requestCurrentLessons, requestMarks])
         .then(axios.spread((...response) => {
@@ -54,8 +55,8 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         const filteredMarks = information.marks.filter((oneMark, index) => {
-            return (oneMark.lesson.name === selectedLesson &&
-                oneMark.user.groups?.some((oneGroupObject) => oneGroupObject.name === selectedGroup));
+            return (oneMark.lesson._id === selectedLesson?._id &&
+                oneMark.user.groups?.some((oneGroupObject) => oneGroupObject._id === selectedGroup?._id));
         })
 
         setCurrentMarks(filteredMarks);
@@ -71,7 +72,7 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
                 }>
                 {
                     information.lessons.map((oneLesson: Lesson) => {
-                        return <Picker.Item label={oneLesson.name.toString()} value={oneLesson.name.toString()} key={oneLesson._id as React.Key}/>
+                        return <Picker.Item label={oneLesson.name.toString()} value={oneLesson} key={oneLesson._id as React.Key}/>
                     })
                 }
             </Picker>
@@ -84,7 +85,7 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
                 }>
                 {
                     information.groups.map((oneGroup: Group) => {
-                        return <Picker.Item label={oneGroup.name.toString()} value={oneGroup.name} key={oneGroup._id as React.Key}/>
+                        return <Picker.Item label={oneGroup.name.toString()} value={oneGroup} key={oneGroup._id as React.Key}/>
                     })
                 }
             </Picker>
@@ -92,15 +93,16 @@ const AcademicPerformanceScreen = ({ navigation, route }) => {
             <Picker
                 selectedValue={selectedDate}
                 mode="dropdown"
-                onValueChange={(itemValue, itemIndex) =>
+                onValueChange={(itemValue, itemIndex) => {
                     setSelectedDate(itemValue)
-                }>
+                }}>
                     <Picker.Item label="Дата занятия " value="" color="#bdb9b9" />
                 {
                     currentMarks !== undefined && currentMarks.length !== 0
                     ? 
-                        currentMarks.find(elem => elem)//Нужно взять любого человека и заполнить даты
-                        .allCurrentLessons?.map((oneMark) => {
+                        // currentMarks.find(elem => elem)//Нужно взять любого человека и заполнить даты
+                        currentMarks[0]
+                        .allCurrentLessons.map((oneMark) => {
                             return <Picker.Item label={moment(oneMark.currentLesson.beginDate).format("LL")} value={oneMark.currentLesson.beginDate} key={oneMark._id as React.Key}/>
                         })
                     :
