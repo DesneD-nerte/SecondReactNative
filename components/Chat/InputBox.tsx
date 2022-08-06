@@ -11,12 +11,11 @@ function InputBox({ socket, setChatMessages, params }) {
     const [text, setText] = useState("");
 
     useEffect(() => {
-        socket?.on("updateMessages", () => {
-            console.log("updateMessage INPUTBOX");
-
-            const { myId, id } = params;
-            executeGetMessages(setChatMessages, myId, id);
-        });
+        // socket?.on("updateMessages", () => {
+        //     console.log("updateMessage INPUTBOX");
+        //     const { myId, id } = params;
+        //     executeGetMessages(setChatMessages, myId, id);
+        // });
     }, []);
 
     const enterMessage = () => {
@@ -38,7 +37,7 @@ function InputBox({ socket, setChatMessages, params }) {
 
         const receiverId = params.id;
         console.log(message, receiverId);
-        socket.emit("sendMessage", { message, receiverId });
+        socket.current.emit("sendMessage", { message, receiverId });
     };
 
     return (

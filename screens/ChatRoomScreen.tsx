@@ -30,6 +30,14 @@ const monthNames = [
     "Декабря",
 ];
 
+type ChatRoomScreenProps = {
+    myId: string;
+    myName: string;
+    id: string;
+    name: string;
+    socket: any;
+};
+
 function ChatRoomScreen({ route }) {
     const flatListRef = useRef<any>();
 
@@ -41,85 +49,92 @@ function ChatRoomScreen({ route }) {
     const { chatRoom } = route.params;
 
     useEffect(() => {
-        const { myId, id } = route.params;
+        const { myId, id, socket } = route.params;
+        console.log(socket.current);
+        socket.current.emit("onEnterTheRoom", { myId, id });
 
-        getDirectMessages(setChatMessages, chatRoom, myId, id, countSkipMessages.current);
+        socket.current.on("updateRoomMessages", (messages) => {
+            setChatMessages(messages);
+        });
 
-        return () => {
-            axios
-                .get(`${mobileURI}/messages/getChatRoomMessages`, {
-                    params: { myId: myId, id: id, skip: 0 },
-                })
-                .then((response) => {
-                    axios.put(`${mobileURI}/messages/updateVisibleAllMessages`, {
-                        chatMessages: response.data,
-                        id,
-                        myId,
-                    });
-                });
-        };
+        // socket.on("createRoomMessages", )
+        // getDirectMessages(setChatMessages, chatRoom, myId, id, countSkipMessages.current);
+
+        // return () => {
+        //     axios
+        //         .get(`${mobileURI}/messages/getChatRoomMessages`, {
+        //             params: { myId: myId, id: id, skip: 0 },
+        //         })
+        //         .then((response) => {
+        //             axios.put(`${mobileURI}/messages/updateVisibleAllMessages`, {
+        //                 chatMessages: response.data,
+        //                 id,
+        //                 myId,
+        //             });
+        //         });
+        // };
     }, []);
 
-    useEffect(() => {
-        let isMounted = true;
-        if (dataIsReady === false) {
-            const { myId, id } = route.params;
-            countSkipMessages.current += 20;
+    // useEffect(() => {
+    //     let isMounted = true;
+    //     if (dataIsReady === false) {
+    //         const { myId, id } = route.params;
+    //         countSkipMessages.current += 20;
 
-            axios
-                .get(`${mobileURI}/messages/getChatRoomMessages`, {
-                    params: { myId: myId, id: id, skip: countSkipMessages.current },
-                })
-                .then((response) => {
-                    setNewChatMessages(response.data);
-                    setDataIsReady(true);
-                });
-        }
+    //         axios
+    //             .get(`${mobileURI}/messages/getChatRoomMessages`, {
+    //                 params: { myId: myId, id: id, skip: countSkipMessages.current },
+    //             })
+    //             .then((response) => {
+    //                 setNewChatMessages(response.data);
+    //                 setDataIsReady(true);
+    //             });
+    //     }
 
-        return () => {
-            isMounted = false;
-        };
-    }, [dataIsReady]);
+    //     return () => {
+    //         isMounted = false;
+    //     };
+    // }, [dataIsReady]);
 
-    const viewabilityConfig = {
-        waitForInteraction: true,
-        // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
-        viewAreaCoveragePercentThreshold: 100,
-        // itemVisiblePercentThreshold: 100
-    };
+    // const viewabilityConfig = {
+    //     waitForInteraction: true,
+    //     // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
+    //     viewAreaCoveragePercentThreshold: 100,
+    //     // itemVisiblePercentThreshold: 100
+    // };
 
-    const onViewableItemsChanged = ({ viewableItems, changed }) => {
-        let isMounted = true;
-        const items = viewableItems;
+    // const onViewableItemsChanged = ({ viewableItems, changed }) => {
+    //     let isMounted = true;
+    //     const items = viewableItems;
 
-        if (items.some((oneItem) => oneItem.index === 0)) {
-            setDataIsReady((oldDataIsReady) => {
-                if (oldDataIsReady === true) {
-                    setNewChatMessages((accessNewChatMessages) => {
-                        if (accessNewChatMessages) {
-                            setChatMessages((oldChatMessages) => {
-                                oldChatMessages.messages.unshift(
-                                    ...accessNewChatMessages.messages
-                                );
-                                return oldChatMessages;
-                            });
-                        }
+    //     if (items.some((oneItem) => oneItem.index === 0)) {
+    //         setDataIsReady((oldDataIsReady) => {
+    //             if (oldDataIsReady === true) {
+    //                 setNewChatMessages((accessNewChatMessages) => {
+    //                     if (accessNewChatMessages) {
+    //                         setChatMessages((oldChatMessages) => {
+    //                             oldChatMessages.messages.unshift(
+    //                                 ...accessNewChatMessages.messages
+    //                             );
+    //                             return oldChatMessages;
+    //                         });
+    //                     }
 
-                        return accessNewChatMessages;
-                    });
+    //                     return accessNewChatMessages;
+    //                 });
 
-                    return false;
-                }
-            });
-        }
+    //                 return false;
+    //             }
+    //         });
+    //     }
 
-        return () => {
-            isMounted = false;
-        };
-    };
-    const viewabilityConfigCallbackPairs = useRef([
-        { viewabilityConfig, onViewableItemsChanged },
-    ]);
+    //     return () => {
+    //         isMounted = false;
+    //     };
+    // };
+    // const viewabilityConfigCallbackPairs = useRef([
+    //     { viewabilityConfig, onViewableItemsChanged },
+    // ]);
 
     return (
         <ImageBackground style={{ width: "100%", height: "100%" }} source={Background}>
@@ -133,9 +148,9 @@ function ChatRoomScreen({ route }) {
                         extraData={chatMessages}
                         // inverted
                         data={[...chatMessages.messages]}
-                        viewabilityConfigCallbackPairs={
-                            viewabilityConfigCallbackPairs.current
-                        }
+                        // viewabilityConfigCallbackPairs={
+                        //     viewabilityConfigCallbackPairs.current
+                        // }
                         renderItem={({ item, index }) => {
                             currentDate = new Date(item.createdAt);
 

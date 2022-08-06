@@ -1,13 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import {
-    View,
-    Text,
-    TextInput,
-    StyleSheet,
-    ImageBackground,
-    TouchableOpacity,
-    FlatList,
-} from "react-native";
+import { View, TextInput, StyleSheet, ImageBackground, FlatList } from "react-native";
 import { io } from "socket.io-client";
 import { Button, Icon } from "react-native-elements";
 import Background from "../assets/WhiteBackground.jpg";
@@ -15,13 +7,6 @@ import ChatListItem from "../components/Chat/ChatListItem";
 import { ChatRoom } from "../types";
 import { useSelector } from "react-redux";
 import { mobileURI } from "../config/config";
-import axios from "axios";
-
-type MyJwt = {
-    id: string;
-    roles: [string];
-    username: string;
-};
 
 const MessengerScreen = ({ navigation }) => {
     const myData = useSelector((state) => state.profileData);
@@ -30,44 +15,26 @@ const MessengerScreen = ({ navigation }) => {
     const [showingChatLastMessages, setShowingChatLastMessages] =
         useState<Array<ChatRoom>>();
 
-    const [socket, setSocket] = useState(null);
+    const socket = useRef(null);
 
     const [isVisibleSearchInput, setIsVisibleSearchInput] = useState(false);
     const [searchedUser, setSearcherUser] = useState("");
 
     useEffect(() => {
-        setSocket(io(`${mobileURI}`).emit("logged-in", myData._id));
+        socket.current = io(`${mobileURI}`).emit("logged-in", myData._id);
 
-        axios
-            .get(`${mobileURI}/messages/getLastMessages`, {
-                params: { myId: myData._id },
-            })
-            .then((response) => {
-                setChatLastMessages(response.data);
-                setShowingChatLastMessages(response.data);
-            })
-            .catch(() => console.log("Ошибка при загрузке lastMessage"));
-    }, []);
-
-    useEffect(() => {
-        socket?.on("updateMessages", () => {
+        socket.current.on("updateLastMessages", (data) => {
             console.log("updateMessage client");
 
-            axios
-                .get(`${mobileURI}/messages/getLastMessages`, {
-                    params: { myId: myData._id },
-                })
-                .then((response) => {
-                    setChatLastMessages(response.data);
-                    setShowingChatLastMessages(response.data);
-                })
-                .catch(() => console.log("Ошибка при загрузке lastMessage"));
+            setChatLastMessages(data);
+            setShowingChatLastMessages(data);
         });
 
-        return () => {
-            socket?.off("WELCOME_FROM_SERVER");
-        };
-    }, [socket]);
+        // return () => {
+        //     console.log("socket close");
+        //     socket.current.off("Bye bye my friend");
+        // };
+    }, []);
 
     useEffect(() => {
         if (searchedUser) {
