@@ -24,7 +24,7 @@ type MyJwt = {
 };
 
 const MessengerScreen = ({ navigation }) => {
-    const myData = useSelector((state) => ({ ...state.profileData }));
+    const myData = useSelector((state) => state.profileData);
 
     const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);
     const [showingChatLastMessages, setShowingChatLastMessages] =

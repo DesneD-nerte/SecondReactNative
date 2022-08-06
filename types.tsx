@@ -1,108 +1,100 @@
 export type User = {
-    // _id: String;
-    // name: String;
-    // imageUri: String;
-    _id: String,
-    username: String,
-    name: String,
-    roles: Array<String>,
-    email: String,
-	imageUri?: String,
-    faculties?: Array<String>,
-    departments?: Array<String>,
-    groups?: Array<String>
-}
+    _id: string;
+    username: string;
+    name: string;
+    roles: Array<string>;
+    email: string;
+    imageUri?: string;
+    faculties?: Array<string>;
+    departments?: Array<string>;
+    groups?: Array<string>;
+};
 
 export type Message = {
-    _id?: String;
-    content: String;
-    createdAt: Date;/////Number
+    _id?: string;
+    content: string;
+    createdAt: Date;
     user: User;
-    isVisible: Boolean;/////////!!!!!!
-}
+    isVisible: boolean;
+};
 
 export type ChatRoom = {
-    _id?: String;
+    _id?: string;
     users: User[];
     lastMessage: Message;
-    countBadge: number;//!!!!!!
-}
+    countBadge: number; //!!!!!!
+};
 
 export type ChatType = {
-	_id?: String;
-	users: Array<User>;
-	messages: Array<Message>;
-}
+    _id?: string;
+    users: Array<User>;
+    messages: Array<Message>;
+};
 
 export type News = {
-	name: string,
-	content: string,
-	createdAt: Date
-}
-
-
-
+    name: string;
+    content: string;
+    createdAt: Date;
+};
 
 export type Audience = {
-    _id: String;
+    _id: string;
     name: String;
-}
+};
 
 export type Lesson = {
-    _id: String;
-    name: String;
-}
+    _id: string;
+    name: string;
+};
 export type Group = {
-    _id: String;
-    name: String;
-}
+    _id: string;
+    name: string;
+};
 export type Department = {
-    _id: String;
-    name: String;
-}
+    _id: string;
+    name: string;
+};
 export type Faculty = {
-    _id: String;
-    name: String;
-}
+    _id: string;
+    name: string;
+};
 export type Role = {
-    _id: String;
-    value: String
-}
+    _id: string;
+    value: string;
+};
 
 export type CurrentLesson = {
-    _id: String,
-    name: Lesson,
-    teacher: User,
-    beginDate: Date,
-    endDate: Date,
-    classroom: Audience,
-    group: Group
-}
-
-
+    _id: string;
+    name: Lesson;
+    teacher: User;
+    beginDate: Date;
+    endDate: Date;
+    classroom: Audience;
+    group: Group;
+};
 
 type UserMarks = {
-    _id?: String,
-    username: String,
-    password: String,
-    name: String,
-    roles: Array<Role>,
-    email: String,
-	imageUri?: String,
-    faculties?:Array<Faculty>,
-    departments?:Array<Department>,
-    groups?:Array<Group>
-}
+    _id?: String;
+    username: String;
+    password: String;
+    name: String;
+    roles: Array<Role>;
+    email: String;
+    imageUri?: String;
+    faculties?: Array<Faculty>;
+    departments?: Array<Department>;
+    groups?: Array<Group>;
+};
 
 export type Marks = {
-    _id: String,
-    user: UserMarks,
-    lesson: Lesson,
+    _id: String;
+    user: UserMarks;
+    lesson: Lesson;
     allCurrentLessons: [
         {
-            _id: String,
-            currentLesson: CurrentLesson,
-            mark: String
+            _id: String;
+            currentLesson: CurrentLesson;
+            mark: String;
         }
-    ]
-}
+    ];
+};
