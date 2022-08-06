@@ -3,7 +3,7 @@ import { SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { LocaleConfig, Agenda } from 'react-native-calendars';
-import { Avatar, Divider, Input } from "react-native-elements";
+import { Avatar, Divider } from "react-native-elements";
 import { mobileURI } from "../config/config";
 import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
 import moment from 'moment';
@@ -40,16 +40,7 @@ const dayNamesShort = ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'В
 const ScheduleScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(true);
 
-    const [items, setItems] = useState(
-        // {
-        // '2022-01-24': [{title: 'Programming', time: '10:15'}, {title: 'Math', time: '12:00'}, {title: 'Modelling', time: '14:10'}],
-        // '2022-01-25': [{title: 'Physics', time: '10.15'}],
-        // '2022-01-26': [],
-        // '2022-01-27': [],
-        // '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}],
-        // }
-        Data
-    );
+    const [items, setItems] = useState(Data);
 
     const renderItem = (item) => {
         return (
@@ -247,7 +238,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         flexDirection: 'row',
         height: 75,
-        // margin: 5,
         padding: 5,
         alignItems: 'center',
         flex: 1

@@ -14,20 +14,20 @@ import {store, persistor} from './store/index';
 
 export default function App() {
 	
-	const [ state, authContext ] = useAuth();
+	const [stateAuth, authActions] = useAuth();
 
 	useEffect(() => {
         if(AsyncStorage.getItem('token')) {
-            authContext.signIn(AsyncStorage.getItem('token'));
+            authActions.signIn(AsyncStorage.getItem('token'));
         } 
     }, [])
 
 	return (
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
-				<AuthContext.Provider value={authContext}>
+				<AuthContext.Provider value={[stateAuth, authActions]}>
 					<NavigationContainer>
-						{state.isAuth
+						{stateAuth.isAuth
 							? 
 							<RequestIncerceptor>
 								<AppStack/>

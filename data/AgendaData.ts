@@ -1,3 +1,10 @@
+// {
+    // '2022-01-24': [{title: 'Programming', time: '10:15'}, {title: 'Math', time: '12:00'}, {title: 'Modelling', time: '14:10'}],
+    // '2022-01-25': [{title: 'Physics', time: '10.15'}],
+    // '2022-01-26': [],
+    // '2022-01-27': [],
+    // '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}],
+// }
 export default {
     '2022-01-01': [],
     '2022-01-02': [],

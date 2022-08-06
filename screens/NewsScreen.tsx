@@ -1,52 +1,60 @@
-import React, {useEffect, useContext, useState} from "react";
-import { StyleSheet, View, Text, FlatList, ImageBackground, RefreshControl } from "react-native"
-import moment from 'moment';
+import React, { useEffect, useState } from "react";
+import {
+    StyleSheet,
+    View,
+    Text,
+    FlatList,
+    ImageBackground,
+    RefreshControl,
+} from "react-native";
+import moment from "moment";
 import { News } from "../types";
 import { Card } from "react-native-elements";
 import { mobileURI } from "../config/config";
-import Background from '../assets/BlackBackground.jpg';
+import Background from "../assets/BlackBackground.jpg";
 import axios from "axios";
 
-
 const NewsScreen = ({ navigation, route }) => {
-
-	const [news, setNews] = useState<Array<News>>([]);
+    const [news, setNews] = useState<Array<News>>([]);
     const [refreshing, setRefreshing] = useState(true);
 
     useEffect(() => {
-        if(refreshing === true) { 
-            axios.get(`${mobileURI}/news/getnews`)
-            .then(response => {
-                setNews(response.data);
-                onRefresh(false);
-            })
-            .catch(error => {
-                console.log(error)
-                setRefreshing(false);
-            })
+        if (refreshing === true) {
+            axios
+                .get(`${mobileURI}/news/getnews`)
+                .then((response) => {
+                    setNews(response.data);
+                    onRefresh(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setRefreshing(false);
+                });
         }
-        
-	}, [refreshing])
-
+    }, [refreshing]);
 
     const onRefresh = (boolean) => {
         setRefreshing(boolean);
-    }
+    };
 
-    return(
-		<ImageBackground style={{width: '100%', height: '100%'}} source={Background}>
+    return (
+        <ImageBackground style={{ width: "100%", height: "100%" }} source={Background}>
             <View>
                 <FlatList
                     data={news}
-                    renderItem={({item}) => (
+                    renderItem={({ item }) => (
                         <Card containerStyle={{ marginTop: 15 }}>
                             <Card.Title>{item.name}</Card.Title>
                             <Card.Divider />
-                            <Text>
-                                {item.content}
-                            </Text>
-                            <Text style={{marginTop: 10, color: 'lightgray', alignSelf: 'flex-end'}}>
-                                {moment(item.createdAt).format('L')}
+                            <Text>{item.content}</Text>
+                            <Text
+                                style={{
+                                    marginTop: 10,
+                                    color: "lightgray",
+                                    alignSelf: "flex-end",
+                                }}
+                            >
+                                {moment(item.createdAt).format("L")}
                             </Text>
                         </Card>
                     )}
@@ -56,33 +64,32 @@ const NewsScreen = ({ navigation, route }) => {
                             refreshing={refreshing}
                             onRefresh={() => onRefresh(true)}
                         />
-                    }>
-                </FlatList>
+                    }
+                ></FlatList>
             </View>
         </ImageBackground>
-    )
-}
+    );
+};
 
 export default NewsScreen;
 
-
 const styles = StyleSheet.create({
     mainContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        margin: 20
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        margin: 20,
     },
 
     headContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 10,
     },
 
     contentContainer: {
         padding: 10,
-        fontSize: 18
-    }
+        fontSize: 18,
+    },
 });

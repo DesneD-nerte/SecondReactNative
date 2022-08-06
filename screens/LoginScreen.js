@@ -3,15 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, ImageBackground, ScrollView, Text, Dimensions} from 'react-native';
 import { Input } from "react-native-elements/dist/input/Input";
 import { Button } from "react-native-elements";
-// import { TokenContext } from "../context/tokenContext";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from "react-redux";
 import { changeProfileData } from "../store/profileDataReducer";
-import { mobileURI } from "../config/config";
 import { Icon } from 'react-native-elements'
 import Background from '../assets/DistantMoon.jpg';
+import { loginHttpPostData } from "../services/LoginService";
 
 const LoginScreen = () => {
 
@@ -20,32 +18,27 @@ const LoginScreen = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    // const {isAuth, setIsAuth} = useContext(TokenContext);
     const [isErrorLogin, setIsErrorLogin] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const { signIn } = useContext(AuthContext);
+    const [ stateAuth, authActions ] = useContext(AuthContext);
 
     const handlePasswordChangeClick = () => {
         setShowPassword(!showPassword);
     }
-
     const loginEnter = () => {
-        axios.post(`${mobileURI}/api/auth/login`, {username: username, password: password})
-        .then(async response => {
-            
-            // setIsAuth(true);
-            const {_id, username, name, roles, email, imageUri, faculties, departments, groups} = response.data;
-            const storeData = {_id, username, name, roles, email, imageUri, faculties, departments, groups};
-            
+        loginHttpPostData(username, password)
+        .then(async data => {
+            const {storeData, response} = data;
+
             dispatch(changeProfileData(storeData));
 
             await AsyncStorage.setItem('token', response.data.token);
-            signIn( response.data.token );
+            authActions.signIn( response.data.token );
         })
         .catch(err => {
             setIsErrorLogin(true);
-        });
+        })
     }
     
     return(

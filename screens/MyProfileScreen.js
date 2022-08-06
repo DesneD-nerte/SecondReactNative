@@ -1,53 +1,34 @@
 import { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
-import { Avatar, Button, Icon } from "react-native-elements";
-// import { TokenContext } from "../context/tokenContext";
+import { Avatar, Icon } from "react-native-elements";
 import { AuthContext } from "../context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 import { mobileURI } from "../config/config";
 import { useDispatch, useSelector } from "react-redux";
+import { changeProfileData } from "../store/profileDataReducer";
+import { getMyData } from "../services/LoginService";
 
 const MyProfileScreen = ({navigation, route}) => {
 
     const [isLoading, setIsLoading] = useState(true);
-    const [myId, setMyid] = useState('');
-    const [nameAndSurname, setNameAndSurname] = useState('');
-    const [login, setLogin] = useState('');
-    const [roles, setRoles] = useState([]);
     const [imageUri, setImageUri] = useState('');
-    // const {isAuth, setIsAuth} = useContext(TokenContext);
 
 	const myData = useSelector((state) => ({...state.profileData}));
-
-    const { signOut } = useContext(AuthContext);
-    // useEffect(() => {
-    //     $api.get(`${mobileURI}/myprofile`)
-    //     .then(response => {
-    //         setMyid(response.data.id);
-    //             setNameAndSurname(response.data.name);
-    //             setLogin(response.data.username);
-    //             setRoles(response.data.roles);
-    //             const fixedImageUri = response.data.imageUri.replace('localhost', '192.168.100.4');
-    //             setImageUri(fixedImageUri);
-    //             setIsLoading(false);
-    //         })
-    //     .catch((error) => console.log(error.message))
-    // }, [])
+    const dispatch = useDispatch();
+    const [authState, authActions] = useContext(AuthContext);
 
     useEffect(() => {
+
         if(myData.imageUri) {
             const fixedImageUri = myData.imageUri.replace('http://localhost:5000', mobileURI);
             setImageUri(fixedImageUri);
         }
 
         setIsLoading(false);
-    }, [])
+    }, [myData])
 
     const logOut = async (event) => {   
-        // AsyncStorage.clear();
-        // setIsAuth(false);
-        signOut();
+        authActions.signOut();
     };
 
     const changeImage = async () => {
@@ -69,17 +50,18 @@ const MyProfileScreen = ({navigation, route}) => {
             type: 'image/jpeg',
             name: result.name
         });
-        bodyFormData.append('id', myId);
-
+        bodyFormData.append('id', myData._id);
         let xhr = new XMLHttpRequest();
         xhr.open('POST', `${mobileURI}/upload`);
+        xhr.setRequestHeader("Authorization", authState.token);
         xhr.send(bodyFormData);
 
-        alert('Аватар изменен');
-
-        setTimeout(() => {
-            navigation.goBack();
-        }, 1000);
+        xhr.onreadystatechange = function() {
+            getMyData(myData)
+            .then(data => {
+                dispatch(changeProfileData(data));
+            })
+        }
     };
     
 
