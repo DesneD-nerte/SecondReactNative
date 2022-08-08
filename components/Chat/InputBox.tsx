@@ -3,20 +3,11 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import { Message } from "../../types";
 import { useSelector } from "react-redux";
-import { executeGetMessages } from "../../services/Messages";
 
-function InputBox({ socket, setChatMessages, params }) {
+function InputBox({ socket, params }) {
     const user = useSelector((state) => state.profileData);
 
     const [text, setText] = useState("");
-
-    useEffect(() => {
-        // socket?.on("updateMessages", () => {
-        //     console.log("updateMessage INPUTBOX");
-        //     const { myId, id } = params;
-        //     executeGetMessages(setChatMessages, myId, id);
-        // });
-    }, []);
 
     const enterMessage = () => {
         if (text === null || text.match(/^ *$/) !== null) {
@@ -36,7 +27,6 @@ function InputBox({ socket, setChatMessages, params }) {
         };
 
         const receiverId = params.id;
-        console.log(message, receiverId);
         socket.current.emit("sendMessage", { message, receiverId });
     };
 

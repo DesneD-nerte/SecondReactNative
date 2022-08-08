@@ -24,15 +24,13 @@ const MessengerScreen = ({ navigation }) => {
         socket.current = io(`${mobileURI}`).emit("logged-in", myData._id);
 
         socket.current.on("updateLastMessages", (data) => {
-            console.log("updateMessage client");
-
             setChatLastMessages(data);
             setShowingChatLastMessages(data);
         });
 
         // return () => {
         //     console.log("socket close");
-        //     socket.current.off("Bye bye my friend");
+        //     // socket.current.off("Bye bye my friend");
         // };
     }, []);
 

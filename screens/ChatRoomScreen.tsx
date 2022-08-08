@@ -6,9 +6,6 @@ import InputBox from "../components/Chat/InputBox";
 import Background from "../assets/WhiteBackground.jpg";
 import DateMessage from "../services/DateMessage";
 import { ChatType } from "../types";
-import { getDirectMessages } from "../services/Messages";
-import { mobileURI } from "../config/config";
-import axios from "axios";
 
 var _ = require("lodash");
 
@@ -50,15 +47,16 @@ function ChatRoomScreen({ route }) {
 
     useEffect(() => {
         const { myId, id, socket } = route.params;
-        console.log(socket.current);
         socket.current.emit("onEnterTheRoom", { myId, id });
 
         socket.current.on("updateRoomMessages", (messages) => {
             setChatMessages(messages);
         });
 
-        // socket.on("createRoomMessages", )
-        // getDirectMessages(setChatMessages, chatRoom, myId, id, countSkipMessages.current);
+        // socket.current.emit("onUpdateVisibleMessages", {
+        //     chatMessagesId: chatMessages._id,
+        //     id,
+        // });
 
         // return () => {
         //     axios
@@ -72,7 +70,7 @@ function ChatRoomScreen({ route }) {
         //                 myId,
         //             });
         //         });
-        // };
+        //     });
     }, []);
 
     // useEffect(() => {
@@ -215,11 +213,7 @@ function ChatRoomScreen({ route }) {
                         ref={flatListRef}
                     ></FlatList>
                 )}
-                <InputBox
-                    socket={route.params.socket}
-                    setChatMessages={setChatMessages}
-                    params={route.params}
-                ></InputBox>
+                <InputBox socket={route.params.socket} params={route.params}></InputBox>
             </View>
         </ImageBackground>
     );
