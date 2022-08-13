@@ -18,7 +18,6 @@ const MyProfileScreen = ({navigation, route}) => {
     const [authState, authActions] = useContext(AuthContext);
 
     useEffect(() => {
-
         if(myData.imageUri) {
             const fixedImageUri = myData.imageUri.replace('http://localhost:5000', mobileURI);
             setImageUri(fixedImageUri);
@@ -67,7 +66,6 @@ const MyProfileScreen = ({navigation, route}) => {
 
     return (
         <View style={styles.profileContainer}>
-            
             {isLoading 
                 ? 
                     <View style={styles.loading}>
