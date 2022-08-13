@@ -6,13 +6,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import UsersMessangerItem from "../components/Chat/UsersMessangerItem";
 import { mobileURI } from "../config/config";
-// import ChatRooms from '../data/ChatRooms';
 import { User } from "../types";
 
 export const UsersMessengerScreen = ({ navigation, route }) => {
     const { socket } = route.params;
 
-    const myData = useSelector((state) => ({ ...state.profileData }));
+    const myData = useSelector((state) => state.profileData);
 
     const [listUsers, setListUsers] = useState<Array<User>>([]);
     const [showingListUsers, setShowingListUsers] = useState<Array<User>>();

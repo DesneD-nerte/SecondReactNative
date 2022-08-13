@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
-import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
-import { ChatRoom, Message, User } from "../../types";
+import { ChatRoom, User } from "../../types";
 import moment from "moment";
 import { mobileURI } from "../../config/config";
 

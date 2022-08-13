@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View, TextInput, StyleSheet, ImageBackground, FlatList } from "react-native";
 import { io } from "socket.io-client";
 import { Button, Icon } from "react-native-elements";
@@ -7,6 +7,7 @@ import ChatListItem from "../components/Chat/ChatListItem";
 import { ChatRoom } from "../types";
 import { useSelector } from "react-redux";
 import { mobileURI } from "../config/config";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MessengerScreen = ({ navigation }) => {
     const myData = useSelector((state) => state.profileData);
@@ -27,12 +28,13 @@ const MessengerScreen = ({ navigation }) => {
             setChatLastMessages(data);
             setShowingChatLastMessages(data);
         });
-
-        // return () => {
-        //     console.log("socket close");
-        //     // socket.current.off("Bye bye my friend");
-        // };
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            socket.current.emit("logged-in", myData._id);
+        }, [myData])
+    );
 
     useEffect(() => {
         if (searchedUser) {

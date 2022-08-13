@@ -38,7 +38,7 @@ function ChatMessage(props: ChatMessageProps) {
     const dateMessage = moment(message.createdAt).format("LT");
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={message._id}>
             <View
                 style={[
                     styles.messageBox,

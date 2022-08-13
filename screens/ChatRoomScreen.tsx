@@ -7,8 +7,6 @@ import Background from "../assets/WhiteBackground.jpg";
 import DateMessage from "../services/DateMessage";
 import { ChatType } from "../types";
 
-var _ = require("lodash");
-
 let currentDate = new Date("1970.01.01");
 let previousDate = new Date("1970-01-01");
 
@@ -38,106 +36,88 @@ type ChatRoomScreenProps = {
 function ChatRoomScreen({ route }) {
     const flatListRef = useRef<any>();
 
-    const countSkipMessages = useRef<number>(0);
+    const { myId, id, socket } = route.params;
 
-    const [chatMessages, setChatMessages] = useState<ChatType>();
-    const [dataIsReady, setDataIsReady] = useState(false);
-    const [newChatMessages, setNewChatMessages] = useState<ChatType>();
-    const { chatRoom } = route.params;
+    const countSkipMessages = useRef<number>(20);
+    const roomId = useRef<string>();
+    const [chatMessages, setChatMessages] = useState<ChatType>({
+        users: [],
+        messages: [],
+    });
 
     useEffect(() => {
-        const { myId, id, socket } = route.params;
         socket.current.emit("onEnterTheRoom", { myId, id });
 
-        socket.current.on("updateRoomMessages", (messages) => {
+        socket.current.on("loadInitialRoomMessages", (messages) => {
             setChatMessages(messages);
+            roomId.current = messages._id;
         });
 
-        // socket.current.emit("onUpdateVisibleMessages", {
-        //     chatMessagesId: chatMessages._id,
-        //     id,
-        // });
+        socket.current.on("updateRoomMessages", (message) => {
+            setChatMessages((prevChatMessages) => ({
+                ...prevChatMessages,
+                messages: [...prevChatMessages.messages, message],
+            }));
+        });
 
-        // return () => {
-        //     axios
-        //         .get(`${mobileURI}/messages/getChatRoomMessages`, {
-        //             params: { myId: myId, id: id, skip: 0 },
-        //         })
-        //         .then((response) => {
-        //             axios.put(`${mobileURI}/messages/updateVisibleAllMessages`, {
-        //                 chatMessages: response.data,
-        //                 id,
-        //                 myId,
-        //             });
-        //         });
-        //     });
+        socket.current.on("loadNewRoomMessages", (messages) => {
+            if (messages) {
+                setChatMessages((prevChatMessages) => ({
+                    ...prevChatMessages,
+                    messages: [...messages.messages, ...prevChatMessages.messages],
+                }));
+            }
+        });
     }, []);
 
-    // useEffect(() => {
-    //     let isMounted = true;
-    //     if (dataIsReady === false) {
-    //         const { myId, id } = route.params;
-    //         countSkipMessages.current += 20;
+    const viewabilityConfig = {
+        waitForInteraction: true,
+        // viewAreaCoveragePercentThreshold: 100,
+        itemVisiblePercentThreshold: 0,
+    };
 
-    //         axios
-    //             .get(`${mobileURI}/messages/getChatRoomMessages`, {
-    //                 params: { myId: myId, id: id, skip: countSkipMessages.current },
-    //             })
-    //             .then((response) => {
-    //                 setNewChatMessages(response.data);
-    //                 setDataIsReady(true);
-    //             });
-    //     }
+    const onViewableItemsChanged = ({ viewableItems, changed }) => {
+        const items = viewableItems;
+        const updateVisibleMessages = items
+            .filter((flatListObject) => {
+                return flatListObject.item.isVisible === false;
+            })
+            .filter((flatListObject) => {
+                return flatListObject.item.user._id === id;
+            })
+            .reduce((prev, curr, index) => {
+                prev[index] = curr.item;
+                prev.length = index + 1;
 
-    //     return () => {
-    //         isMounted = false;
-    //     };
-    // }, [dataIsReady]);
+                return prev;
+            }, {});
 
-    // const viewabilityConfig = {
-    //     waitForInteraction: true,
-    //     // At least one of the viewAreaCoveragePercentThreshold or itemVisiblePercentThreshold is required.
-    //     viewAreaCoveragePercentThreshold: 100,
-    //     // itemVisiblePercentThreshold: 100
-    // };
+        const arrayUpdateVisibleMessages = Array.from(updateVisibleMessages);
 
-    // const onViewableItemsChanged = ({ viewableItems, changed }) => {
-    //     let isMounted = true;
-    //     const items = viewableItems;
+        socket.current.emit("onUpdateVisibleMessages", {
+            id: id,
+            roomId: roomId.current,
+            messages: arrayUpdateVisibleMessages,
+        });
 
-    //     if (items.some((oneItem) => oneItem.index === 0)) {
-    //         setDataIsReady((oldDataIsReady) => {
-    //             if (oldDataIsReady === true) {
-    //                 setNewChatMessages((accessNewChatMessages) => {
-    //                     if (accessNewChatMessages) {
-    //                         setChatMessages((oldChatMessages) => {
-    //                             oldChatMessages.messages.unshift(
-    //                                 ...accessNewChatMessages.messages
-    //                             );
-    //                             return oldChatMessages;
-    //                         });
-    //                     }
+        setTimeout(() => {
+            if (items.some((oneItem) => oneItem.index === 0)) {
+                const skip = countSkipMessages.current;
+                socket.current.emit("onLoadNewMessages", { myId, id, skip });
 
-    //                     return accessNewChatMessages;
-    //                 });
+                countSkipMessages.current += 20;
+            }
+        }, 2000);
+    };
 
-    //                 return false;
-    //             }
-    //         });
-    //     }
-
-    //     return () => {
-    //         isMounted = false;
-    //     };
-    // };
-    // const viewabilityConfigCallbackPairs = useRef([
-    //     { viewabilityConfig, onViewableItemsChanged },
-    // ]);
+    const viewabilityConfigCallbackPairs = useRef([
+        { viewabilityConfig, onViewableItemsChanged },
+    ]);
 
     return (
         <ImageBackground style={{ width: "100%", height: "100%" }} source={Background}>
             <View style={styles.container}>
-                {!chatMessages ? (
+                {!chatMessages.messages.length ? (
                     <View style={styles.loading}>
                         <Text style={styles.loadingText}>Сообщений нет</Text>
                     </View>
@@ -146,9 +126,9 @@ function ChatRoomScreen({ route }) {
                         extraData={chatMessages}
                         // inverted
                         data={[...chatMessages.messages]}
-                        // viewabilityConfigCallbackPairs={
-                        //     viewabilityConfigCallbackPairs.current
-                        // }
+                        viewabilityConfigCallbackPairs={
+                            viewabilityConfigCallbackPairs.current
+                        }
                         renderItem={({ item, index }) => {
                             currentDate = new Date(item.createdAt);
 
@@ -219,7 +199,7 @@ function ChatRoomScreen({ route }) {
     );
 }
 
-export default ChatRoomScreen;
+export default React.memo(ChatRoomScreen);
 
 const styles = StyleSheet.create({
     container: {
