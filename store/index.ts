@@ -1,21 +1,22 @@
-import { combineReducers, createStore } from "redux";
-import { profileDataReducer } from "./profileDataReducer";
-// import storage from 'redux-persist/lib/storage' 
+import { configureStore } from "@reduxjs/toolkit";
+import {
+    persistStore,
+    persistReducer,
+  } from 'redux-persist'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { persistStore, persistReducer } from 'redux-persist'
-
-const rootReducer = combineReducers({
-    profileData: profileDataReducer,
-})
+import profileSlice from "./slices/profileSlice";
 
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
 }
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, profileSlice)
 
-export const store = createStore(persistedReducer);
+export const store = configureStore({
+    reducer: {
+        profile: persistedReducer
+    }
+})
+
 export const persistor = persistStore(store);
-
-// export const store = createStore(rootReducer);

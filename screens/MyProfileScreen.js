@@ -13,7 +13,8 @@ const MyProfileScreen = ({navigation, route}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [imageUri, setImageUri] = useState('');
 
-	const myData = useSelector((state) => ({...state.profileData}));
+	const myData = useSelector((state) => (state.profile));
+
     const dispatch = useDispatch();
     const [authState, authActions] = useContext(AuthContext);
 

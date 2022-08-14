@@ -10,6 +10,7 @@ import { changeProfileData } from "../store/profileDataReducer";
 import { Icon } from 'react-native-elements'
 import Background from '../assets/DistantMoon.jpg';
 import { loginHttpPostData } from "../services/LoginService";
+import { loadProfile } from "../store/slices/profileSlice";
 
 const LoginScreen = () => {
 
@@ -31,7 +32,8 @@ const LoginScreen = () => {
         .then(async data => {
             const {storeData, response} = data;
 
-            dispatch(changeProfileData(storeData));
+            // dispatch(changeProfileData(storeData));
+            dispatch(loadProfile(storeData));
 
             await AsyncStorage.setItem('token', response.data.token);
             authActions.signIn( response.data.token );

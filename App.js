@@ -14,12 +14,21 @@ import {store, persistor} from './store/index';
 
 export default function App() {
 	
-	const [stateAuth, authActions] = useAuth();
+	const [stateAuth, authActions] = useAuth()
 
 	useEffect(() => {
-        if(AsyncStorage.getItem('token')) {
-            authActions.signIn(AsyncStorage.getItem('token'));
-        } 
+		console.log(stateAuth.isAuth);
+		if(stateAuth.isAuth) {
+			//Check connection
+			if(true) {
+
+			} else {
+				authActions.signOut();
+			}
+		}
+        // if(AsyncStorage.getItem('token')) {
+        //     authActions.signIn(AsyncStorage.getItem('token'));
+        // } 
     }, [])
 
 	return (

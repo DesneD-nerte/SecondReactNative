@@ -1,7 +1,20 @@
 import { useReducer, useMemo, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const useAuth = () => {
+interface IStateAuth {
+    isAuth: boolean,
+    token: string,
+}
+interface IAuthActions {
+    signIn: (data) => void
+    signOut: () => void
+}
+interface IAuth {
+    stateAuth : IStateAuth,
+    authActions: IAuthActions
+}
+
+export const useAuth = () : [IStateAuth, IAuthActions] => {
     const [stateAuth, dispatch] = useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -27,7 +40,13 @@ export const useAuth = () => {
     );
     
     const authActions = useMemo(() => ({
-        signIn: async (data) => {
+        // signIn: async (data) => {
+        //     dispatch({ type: 'SIGN_IN', token: data });
+        // },
+        // signOut: () => {
+        //     dispatch({ type: 'SIGN_OUT' })
+        // },
+        signIn: (data) => {
             dispatch({ type: 'SIGN_IN', token: data });
         },
         signOut: () => {
@@ -35,6 +54,6 @@ export const useAuth = () => {
         },
     }), []);
 
-    return [ stateAuth, authActions];
+    return [stateAuth, authActions];
 }
 
