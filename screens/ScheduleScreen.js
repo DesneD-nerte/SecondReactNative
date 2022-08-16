@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
@@ -9,6 +9,7 @@ import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
 import moment from 'moment';
 import Data from '../data/AgendaData';
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 moment.locale('ru');
 
@@ -39,6 +40,7 @@ const dayNamesShort = ['Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.', 'В
 
 const ScheduleScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(true);
+    const [ stateAuth, authActions ] = useContext(AuthContext);
 
     const [items, setItems] = useState(Data);
 

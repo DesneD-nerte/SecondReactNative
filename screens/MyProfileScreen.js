@@ -5,8 +5,8 @@ import { AuthContext } from "../context/AuthContext";
 import * as ImagePicker from 'expo-image-picker';
 import { mobileURI } from "../config/config";
 import { useDispatch, useSelector } from "react-redux";
-import { changeProfileData } from "../store/profileDataReducer";
 import { getMyData } from "../services/LoginService";
+import { loadProfile } from "../store/slices/profileSlice";
 
 const MyProfileScreen = ({navigation, route}) => {
 
@@ -59,7 +59,7 @@ const MyProfileScreen = ({navigation, route}) => {
         xhr.onreadystatechange = function() {
             getMyData(myData)
             .then(data => {
-                dispatch(changeProfileData(data));
+                dispatch(loadProfile(data));
             })
         }
     };

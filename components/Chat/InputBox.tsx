@@ -5,7 +5,7 @@ import { Message } from "../../types";
 import { useSelector } from "react-redux";
 
 function InputBox({ socket, params }) {
-    const user = useSelector((state) => state.profileData);
+    const user = useSelector((state) => state.profile);
 
     const [text, setText] = useState("");
 

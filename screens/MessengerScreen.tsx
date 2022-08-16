@@ -11,7 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useSearchMainScreen } from "../hooks/messenger/useSearchMainScreen";
 
 const MessengerScreen = ({ navigation }) => {
-    const myData = useSelector((state) => state.profileData);
+    const myData = useSelector((state) => state.profile);
 
     const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);
     const searchedChatMessages = useSearchMainScreen({ chatLastMessages, navigation });

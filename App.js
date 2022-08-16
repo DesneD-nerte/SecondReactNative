@@ -7,28 +7,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from './context/AuthContext';
 import RequestIncerceptor from './http/RequestIncerceptor';
 import { useAuth } from './hooks/useAuth';
-
 import { PersistGate } from 'redux-persist/integration/react'
-import {store, persistor} from './store/index';
+import { store, persistor } from './store/index';
 
 
 export default function App() {
 	
 	const [stateAuth, authActions] = useAuth()
-
 	useEffect(() => {
-		console.log(stateAuth.isAuth);
-		if(stateAuth.isAuth) {
-			//Check connection
-			if(true) {
-
-			} else {
-				authActions.signOut();
+		const asyncSignIn = async () => {
+			const token = await AsyncStorage.getItem('token');
+			if(token) {
+				authActions.signIn(token);
 			}
 		}
-        // if(AsyncStorage.getItem('token')) {
-        //     authActions.signIn(AsyncStorage.getItem('token'));
-        // } 
+		asyncSignIn();
     }, [])
 
 	return (

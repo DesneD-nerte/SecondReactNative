@@ -20,6 +20,7 @@ export const useAuth = () : [IStateAuth, IAuthActions] => {
             switch (action.type) {
     
                 case 'SIGN_IN':
+                AsyncStorage.setItem('token', action.token);
                 return {
                     isAuth: true,
                     token: action.token,
@@ -40,12 +41,6 @@ export const useAuth = () : [IStateAuth, IAuthActions] => {
     );
     
     const authActions = useMemo(() => ({
-        // signIn: async (data) => {
-        //     dispatch({ type: 'SIGN_IN', token: data });
-        // },
-        // signOut: () => {
-        //     dispatch({ type: 'SIGN_OUT' })
-        // },
         signIn: (data) => {
             dispatch({ type: 'SIGN_IN', token: data });
         },

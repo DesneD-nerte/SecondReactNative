@@ -1,12 +1,10 @@
-import { useContext, useEffect, useLayoutEffect, useMemo } from 'react'
+import { useContext, useLayoutEffect} from 'react'
 import axios from 'axios'
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RequestIncerceptor = ({ children }) => {
-    const { signIn, signOut } = useContext(AuthContext);
-
-    // const $api = axios.create();
+    const [ stateAuth, authActions ] = useContext(AuthContext);
     
     useLayoutEffect(() => {
         axios.interceptors.request.use(async config => {
@@ -26,9 +24,9 @@ const RequestIncerceptor = ({ children }) => {
         axios.interceptors.response.use(function (response) {
             return response;
         }, function (error) {
-                console.log(error);
+                console.log('interceptor error', error);
                 if(error.response.status == 401) {
-                    signOut();
+                    authActions.signOut();
                 }
 
                 return Promise.reject(error);

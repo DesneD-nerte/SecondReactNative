@@ -4,9 +4,7 @@ import { StyleSheet, View, ImageBackground, ScrollView, Text, Dimensions} from '
 import { Input } from "react-native-elements/dist/input/Input";
 import { Button } from "react-native-elements";
 import { AuthContext } from "../context/AuthContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from "react-redux";
-import { changeProfileData } from "../store/profileDataReducer";
 import { Icon } from 'react-native-elements'
 import Background from '../assets/DistantMoon.jpg';
 import { loginHttpPostData } from "../services/LoginService";
@@ -32,10 +30,8 @@ const LoginScreen = () => {
         .then(async data => {
             const {storeData, response} = data;
 
-            // dispatch(changeProfileData(storeData));
             dispatch(loadProfile(storeData));
 
-            await AsyncStorage.setItem('token', response.data.token);
             authActions.signIn( response.data.token );
         })
         .catch(err => {

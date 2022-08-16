@@ -10,7 +10,7 @@ import { User } from "../types";
 export const UsersMessengerScreen = ({ navigation, route }) => {
     const { socket } = route.params;
 
-    const myData = useSelector((state) => state.profileData);
+    const myData = useSelector((state) => state.profile);
 
     const [listUsers, setListUsers] = useState<Array<User>>([]);
     const searchedListUsers = useSearchContactList({ listUsers, navigation });
