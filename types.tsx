@@ -39,7 +39,7 @@ export type News = {
 
 export type Audience = {
     _id: string;
-    name: String;
+    name: string; ////////////////
 };
 
 export type Lesson = {
@@ -66,7 +66,7 @@ export type Role = {
 export type CurrentLesson = {
     _id: string;
     name: Lesson;
-    teacher: User;
+    teachers: User[]; ///////////teacher: User
     beginDate: Date;
     endDate: Date;
     classroom: Audience;

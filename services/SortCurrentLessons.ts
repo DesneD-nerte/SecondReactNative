@@ -1,4 +1,6 @@
-export default function sortCurrentLessonsByDate(currentLessons) {
+import { CurrentLesson } from "../types";
+
+export default function sortCurrentLessonsByDate(currentLessons: CurrentLesson[]) {
     currentLessons.sort((a, b) => {
         const dateA = a.beginDate;
         const dateB = b.beginDate;

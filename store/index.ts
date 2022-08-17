@@ -5,6 +5,8 @@ import {
   } from 'redux-persist'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import profileSlice from "./slices/profileSlice";
+import { currentLessonsApi } from "./api/currentLessonsAPI";
+import { setupListeners } from '@reduxjs/toolkit/query'
 
 const persistConfig = {
     key: 'root',
@@ -15,9 +17,12 @@ const persistedReducer = persistReducer(persistConfig, profileSlice)
 
 export const store = configureStore({
     reducer: {
-        profile: persistedReducer
+        profile: persistedReducer,
+        [currentLessonsApi.reducerPath]: currentLessonsApi.reducer
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false,}),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(currentLessonsApi.middleware),
 })
+
+setupListeners(store.dispatch) 
 
 export const persistor = persistStore(store);
