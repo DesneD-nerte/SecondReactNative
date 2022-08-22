@@ -50,7 +50,7 @@ const LoginScreen = () => {
                         size={35}
                         raised
                     />
-                    <Text style={{textAlign: 'center', fontSize: 25, color: 'white' }}>
+                    <Text style={styles.loginHeader_Text}>
                         Login
                     </Text>
                 </View>
@@ -97,6 +97,11 @@ const styles = StyleSheet.create({
         flex: 0.5,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    loginHeader_Text: {
+        textAlign: 'center',
+        fontSize: 25,
+        color: 'white'
     },
     mainContainer: {
         flex: 1,

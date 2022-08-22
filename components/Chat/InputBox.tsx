@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import { Message } from "../../types";
 import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 function InputBox({ socket, params }) {
-    const user = useSelector((state) => state.profile);
+    const user = useSelector((state: RootState) => state.profile);
 
     const [text, setText] = useState("");
 

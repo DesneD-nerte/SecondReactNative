@@ -9,9 +9,10 @@ import { useSelector } from "react-redux";
 import { mobileURI } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { useSearchMainScreen } from "../hooks/messenger/useSearchMainScreen";
+import { RootState } from "../store";
 
 const MessengerScreen = ({ navigation }) => {
-    const myData = useSelector((state) => state.profile);
+    const myData = useSelector((state: RootState) => state.profile);
 
     const [chatLastMessages, setChatLastMessages] = useState<Array<ChatRoom>>([]);
     const searchedChatMessages = useSearchMainScreen({ chatLastMessages, navigation });
@@ -33,8 +34,8 @@ const MessengerScreen = ({ navigation }) => {
     );
 
     return (
-        <ImageBackground style={{ width: "100%", height: "100%" }} source={Background}>
-            <View style={{ flex: 1 }}>
+        <ImageBackground style={styles.imageBackground} source={Background}>
+            <View style={styles.mainContainer}>
                 <View style={styles.messagesContainer}>
                     <FlatList
                         extraData={searchedChatMessages}
@@ -71,6 +72,13 @@ const MessengerScreen = ({ navigation }) => {
 export default MessengerScreen;
 
 const styles = StyleSheet.create({
+    imageBackground: {
+        width: "100%",
+        height: "100%",
+    },
+    mainContainer: {
+        flex: 1,
+    },
     messagesContainer: {
         flex: 1,
     },

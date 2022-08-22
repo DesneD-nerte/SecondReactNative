@@ -3,6 +3,7 @@ import { View, TextInput } from "react-native";
 import { useSelector } from "react-redux";
 import { ChatRoom } from "../../types";
 import { Button } from "react-native-elements";
+import { RootState } from "../../store";
 
 interface useSearchMainScreenProps {
     chatLastMessages: Array<ChatRoom>;
@@ -10,7 +11,7 @@ interface useSearchMainScreenProps {
 }
 
 export const useSearchMainScreen = (props: useSearchMainScreenProps) => {
-    const myData = useSelector((state) => state.profileData);
+    const myData = useSelector((state: RootState) => state.profile);
     const { navigation, chatLastMessages } = props;
 
     const [searchedUser, setSearchedUser] = useState("");

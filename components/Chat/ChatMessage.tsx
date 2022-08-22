@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
 import { Message } from "../../types";
 import moment from "moment";
-import "moment/src/locale/en-gb";
 import "moment/min/locales";
-import jwtDecode from "jwt-decode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 moment.locale("ru");
 
@@ -14,26 +13,13 @@ type ChatMessageProps = {
     message: Message;
 };
 
-type MyJwt = {
-    id: string;
-    roles: [string];
-    username: string;
-};
-
 function ChatMessage(props: ChatMessageProps) {
     const { message } = props;
-    const [myId, setMyId] = useState("");
+    const { _id } = useSelector((state: RootState) => state.profile);
 
-    useEffect(() => {
-        AsyncStorage.getItem("token").then((token) => {
-            const tokenData = jwtDecode<MyJwt>(token);
-            setMyId(tokenData.id);
-        });
+    const isMyMessage = useMemo(() => {
+        return message.user._id === _id;
     }, []);
-
-    const isMyMessage = () => {
-        return message.user._id === myId;
-    };
 
     const dateMessage = moment(message.createdAt).format("LT");
 
@@ -43,9 +29,9 @@ function ChatMessage(props: ChatMessageProps) {
                 style={[
                     styles.messageBox,
                     {
-                        backgroundColor: isMyMessage() ? "#DCF8C5" : "white",
-                        marginLeft: isMyMessage() ? 50 : 0,
-                        marginRight: isMyMessage() ? 0 : 50,
+                        backgroundColor: isMyMessage ? "#DCF8C5" : "white",
+                        marginLeft: isMyMessage ? 50 : 0,
+                        marginRight: isMyMessage ? 0 : 50,
                     },
                 ]}
             >
@@ -63,7 +49,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 10,
     },
-
     messageBox: {
         backgroundColor: "#DBDBDB",
         marginVertical: 5,
