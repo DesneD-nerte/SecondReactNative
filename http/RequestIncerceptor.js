@@ -12,8 +12,8 @@ const RequestIncerceptor = ({ children }) => {
             config.headers.Authorization = token;
         
             return config;
-        }, error => {
-            console.log('lol');
+        }, function (error) {
+            console.log('interceptor request error', error);
 
             return Promise.reject(error);
         })
@@ -24,7 +24,7 @@ const RequestIncerceptor = ({ children }) => {
         axios.interceptors.response.use(function (response) {
             return response;
         }, function (error) {
-                console.log('interceptor error', error);
+                console.log('interceptor response error', error);
                 if(error.response.status == 401) {
                     authActions.signOut();
                 }
