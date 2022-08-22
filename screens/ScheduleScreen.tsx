@@ -1,60 +1,34 @@
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { mobileURI } from "../config/config";
-import sortCurrentLessonsByDate from "../services/SortCurrentLessons";
 import moment from "moment";
-import Data from "../data/AgendaData";
-import axios from "axios";
 import RenderDay from "../components/Agenda/renderDay";
 import EmptyDay from "../components/Agenda/emptyDay";
 import RenderItem from "../components/Agenda/renderItem";
 import RenderKnob from "../components/Agenda/renderKnob";
-import { CurrentLesson } from "../types";
 import { useGetCurrentLessonsQuery } from "../store/api/currentLessonsAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { toAgendaDataForm } from "../store/slices/currentLessonsSlice";
 
 moment.locale("ru");
 
 const ScheduleScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(true);
+    const items = useSelector((state: RootState) => state.currentLessonsAgenda);
+    const dispatch = useDispatch<AppDispatch>();
 
-    const [items, setItems] = useState(Data);
-    const { data, error, isLoading } = useGetCurrentLessonsQuery();
-
-    // useEffect(() => {
-    //     if (refreshing === true) {
-    //         axios.get(`${mobileURI}/currentlessons`).then((response) => {
-    //             const currentLessons: CurrentLesson[] = response.data;
-
-    //             sortCurrentLessonsByDate(currentLessons);
-
-    //             const newItems = JSON.parse(JSON.stringify(Data));
-    //             for (const oneCurrentLesson of data) {
-    //                 const beginDate = new Date(oneCurrentLesson.beginDate);
-
-    //                 const dateForItem = beginDate.toISOString().replace(/T.*/, "");
-
-    //                 if (newItems[dateForItem]) {
-    //                     newItems[dateForItem].push(oneCurrentLesson);
-    //                 } else {
-    //                     newItems[dateForItem] = [oneCurrentLesson];
-    //                 }
-    //             }
-    //             setItems(newItems);
-    //             onRefresh(false);
-    //         });
-    //     }
-    // }, [refreshing]);
+    const { data, error, isLoading, refetch } = useGetCurrentLessonsQuery();
 
     useEffect(() => {
-        if (refreshing) {
-            console.log(data);
-            data.pop(); //! Нельзя так делать, давай попробуем отсортировать занятия прям на сервере, а не на клиенте
+        if (refreshing && data) {
+            dispatch(toAgendaDataForm(data));
             setRefreshing(false);
         }
     }, [data, refreshing]);
 
     const onRefresh = (boolean) => {
+        refetch();
         setRefreshing(boolean);
     };
 
@@ -74,11 +48,9 @@ const ScheduleScreen = ({ navigation, route }) => {
                 renderEmptyDate={() => {
                     return <EmptyDay />;
                 }}
-                //Кнопка под календарем
                 renderKnob={() => {
                     return <RenderKnob />;
                 }}
-                // Hide knob button. Default = false
                 hideKnob={false}
                 showClosingKnob={true}
                 onRefresh={() => onRefresh(true)}

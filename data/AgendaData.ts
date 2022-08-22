@@ -5,7 +5,14 @@
     // '2022-01-27': [],
     // '2022-01-28': [{title: 'SQL', time: '12:00'}, {title: 'Programming', time: '14:10'}],
 // }
-export default {
+
+import { CurrentLesson } from "../types"
+
+export interface IAgenda<T> {
+    [date: string]: T[]
+}
+
+const data: IAgenda<CurrentLesson> = {
     '2022-01-01': [],
     '2022-01-02': [],
     '2022-01-03': [],
@@ -383,3 +390,5 @@ export default {
     '2022-12-30': [],
     '2022-12-31': [],
 }
+
+export default data;
