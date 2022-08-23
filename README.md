@@ -1,13 +1,23 @@
 # UniversityMobileClient
-Scheduler Screen
-![Screenshot_1661268506](https://user-images.githubusercontent.com/72410663/186200616-60fa2aac-5a2d-48fc-8cf3-70212332650d.png)
-News Screen
-![Screenshot_1661268527](https://user-images.githubusercontent.com/72410663/186201013-ddf7c6a1-5bff-4c85-b85f-3cf1684c5dac.png)
-Messenger Screen
-![Screenshot_1661268756](https://user-images.githubusercontent.com/72410663/186201122-80654092-fa2b-4de3-ade9-18fcb6bf3f56.png)
-![Screenshot_1661268549](https://user-images.githubusercontent.com/72410663/186201128-5bdffb4f-e9b4-495e-9254-6275038dd036.png)
-![Screenshot_1661268914](https://user-images.githubusercontent.com/72410663/186201137-26bcdb54-6e55-454b-8094-0d3a489693bd.png)
-Journal Screen
-![Screenshot_1661268708](https://user-images.githubusercontent.com/72410663/186201186-583cd64c-04d3-4939-beee-5cfcc581c96d.png)
-Profile Screen
-![Screenshot_1661268712](https://user-images.githubusercontent.com/72410663/186201219-5b14fbc6-a69a-4677-b888-e19e59eb99d8.png)
+# Scheduler Screen
+
+![Без имени-1](https://user-images.githubusercontent.com/72410663/186202375-cdbd25d1-c5af-44a3-b77a-ed08cc02f8cf.png)
+
+# News Screen
+
+![Без имени-2](https://user-images.githubusercontent.com/72410663/186203116-cbfff64c-5d26-42bd-941e-edebfbcb9d23.png)
+
+# Messenger Screens
+
+![Без имени-3](https://user-images.githubusercontent.com/72410663/186203161-70ec87ff-9a95-466e-aad2-316d48c8051c.png)
+![Без имени-4](https://user-images.githubusercontent.com/72410663/186203166-4302138b-3a41-4e03-8fc5-384ba65edba2.png)
+![Без имени-5](https://user-images.githubusercontent.com/72410663/186203176-2685cea2-6801-4195-a87f-a18ea8688df1.png)
+
+# Journal Screen
+
+![Без имени-6](https://user-images.githubusercontent.com/72410663/186203191-5f4d29b9-bbfe-4cc6-bab1-175816d688bb.png)
+
+# Profile Screen
+
+![Без имени-7](https://user-images.githubusercontent.com/72410663/186203215-29662f0e-7c1b-4869-ad2b-cef7f4a170f5.png)
+
