@@ -19,5 +19,4 @@
 
 # Profile Screen
 
-![Без имени-7](https://user-images.githubusercontent.com/72410663/186203215-29662f0e-7c1b-4869-ad2b-cef7f4a170f5.png)
-
+![Без имени-7](https://user-images.githubusercontent.com/72410663/186203873-c1422756-b62f-4d92-b9a6-78943547a789.png)
