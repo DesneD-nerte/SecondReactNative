@@ -89,7 +89,7 @@ const MyProfileScreen = ({navigation, route}) => {
                                 <Text style={styles.propertiesValue}>{myData.name}</Text>
                             </View>
                             {
-                                myData.faculties.length !== 0 &&
+                                myData.faculties &&
                                 <View style={styles.oneProperty}>
                                     <Text style={styles.propertiesName}>Faculty:</Text>
                                     <Text style={styles.propertiesValue}>
@@ -98,7 +98,7 @@ const MyProfileScreen = ({navigation, route}) => {
                                 </View>
                             }
                             {
-                                myData.departments.length !== 0 &&
+                                myData.departments &&
                                 <View style={styles.oneProperty}>
                                     <Text style={styles.propertiesName}>Department:</Text>
                                     <Text style={styles.propertiesValue}>
@@ -107,7 +107,7 @@ const MyProfileScreen = ({navigation, route}) => {
                                 </View>
                             }
                             {
-                                myData.groups.length !== 0 &&
+                                myData.groups &&
                                 <View style={styles.oneProperty}>
                                     <Text style={styles.propertiesName}>Group:</Text>
                                     <Text style={styles.propertiesValue}>
@@ -130,33 +130,35 @@ const MyProfileScreen = ({navigation, route}) => {
                         <View style={styles.betweenLine}></View>
 
                         <View style={styles.optionsContainer}>
-                            <Text style={styles.textOptions}>Настройки</Text>
-                                <TouchableOpacity style={styles.oneItemContainer} onPress={changeImage}>
-                                        <Icon 
-                                            type='Octicons'
-                                            name='person'
-                                            size={26}
-                                            color="gray">
-                                        </Icon>
-                                    <View style={styles.oneItem}>
-                                        <Text style={styles.textOneItem}>
-                                            Изменить аватар
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.oneItemContainer} onPress={logOut}>
-                                        <Icon 
-                                            type='MaterialIcons'
-                                            name='logout'
-                                            size={26}
-                                            color="gray">
-                                        </Icon>
-                                    <View style={styles.oneItem}>
-                                        <Text style={styles.textOneItem}>
-                                            Выход
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
+                            <Text style={styles.textOptions}>
+                                Настройки
+                            </Text>
+                            <TouchableOpacity style={styles.oneItemContainer} onPress={changeImage}>
+                                    <Icon 
+                                        type='Octicons'
+                                        name='person'
+                                        size={26}
+                                        color="gray">
+                                    </Icon>
+                                <View style={styles.oneItem}>
+                                    <Text style={styles.textOneItem}>
+                                        Изменить аватар
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.oneItemContainer} onPress={logOut}>
+                                    <Icon 
+                                        type='MaterialIcons'
+                                        name='logout'
+                                        size={26}
+                                        color="gray">
+                                    </Icon>
+                                <View style={styles.oneItem}>
+                                    <Text style={styles.textOneItem}>
+                                        Выход
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>  
                                               
                     </ScrollView>

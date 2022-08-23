@@ -38,7 +38,7 @@ const NewsScreen = ({ navigation, route }) => {
     };
 
     return (
-        <ImageBackground style={{ width: "100%", height: "100%" }} source={Background}>
+        <ImageBackground style={styles.imageBackground} source={Background}>
             <View>
                 <FlatList
                     data={news}
@@ -47,13 +47,7 @@ const NewsScreen = ({ navigation, route }) => {
                             <Card.Title>{item.name}</Card.Title>
                             <Card.Divider />
                             <Text>{item.content}</Text>
-                            <Text
-                                style={{
-                                    marginTop: 10,
-                                    color: "lightgray",
-                                    alignSelf: "flex-end",
-                                }}
-                            >
+                            <Text style={styles.containerStyle__Text}>
                                 {moment(item.createdAt).format("L")}
                             </Text>
                         </Card>
@@ -74,22 +68,13 @@ const NewsScreen = ({ navigation, route }) => {
 export default NewsScreen;
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        margin: 20,
+    imageBackground: {
+        width: "100%",
+        height: "100%",
     },
-
-    headContainer: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 10,
-    },
-
-    contentContainer: {
-        padding: 10,
-        fontSize: 18,
+    containerStyle__Text: {
+        marginTop: 10,
+        color: "lightgray",
+        alignSelf: "flex-end",
     },
 });
