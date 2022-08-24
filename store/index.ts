@@ -8,6 +8,7 @@ import profileSlice from "./slices/profileSlice";
 import currentLessonsSlice from "./slices/currentLessonsSlice";
 import { currentLessonsApi } from "./api/currentLessonsAPI";
 import { setupListeners } from '@reduxjs/toolkit/query'
+import informationSlice from "./slices/informationSlice";
 
 const persistConfig = {
     key: 'root',
@@ -20,6 +21,7 @@ export const store = configureStore({
     reducer: {
         profile: persistedReducer,
         currentLessonsAgenda: currentLessonsSlice,
+        information: informationSlice,
         [currentLessonsApi.reducerPath]: currentLessonsApi.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(currentLessonsApi.middleware),
